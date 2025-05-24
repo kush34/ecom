@@ -1,5 +1,6 @@
 import express, { urlencoded } from "express";
-import userRouter from "./routers/userRouter.js"
+import userRouter from "./routers/userRouter.js";
+import productRouter from "./routers/productRouter.js";
 import cors from "cors";
 import "dotenv/config";
 import connectDB from "./config/database.js"; 
@@ -11,7 +12,8 @@ app.use(cors({
     origin:process.env.Frontend_URL,
     Credential:true
 }))
-app.use("/user",userRouter)
+app.use("/user",userRouter);
+app.use("/product",productRouter);
 app.get("/",(req,res)=>{
     res.send("Hello from backend")
 })
