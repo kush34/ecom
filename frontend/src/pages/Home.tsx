@@ -1,3 +1,4 @@
+import Footer from "@/components/footer"
 import Navbar from "@/components/Navbar"
 import SearchBar from "@/components/SearchBar"
 
@@ -11,9 +12,12 @@ const Home = () => {
     
 
   return (
-    <div>
+    <div className="w-full h-screen">
       <Navbar/>
       <SearchBar/>
+      <div className="h-1/2 mt-5">
+        <Footer/>
+      </div>
     </div>
   )
 }
