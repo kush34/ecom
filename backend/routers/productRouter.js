@@ -1,5 +1,6 @@
 import express from "express";
 import { createProduct } from "../controllers/product.js";
+import Product from "../models/productModel.js";
 
 const router = express.Router();
 
@@ -14,4 +15,12 @@ router.post('/createProduct',async (req,res)=>{
     }
 })
 
+router.get('/getProducts', async (req,res)=>{
+    try {
+        const products = await Product.find();
+        res.send(products);
+    } catch (error) {
+        console.log(error);
+    }
+})
 export default router;
