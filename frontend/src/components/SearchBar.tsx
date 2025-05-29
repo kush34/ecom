@@ -1,7 +1,9 @@
 import { Bell } from 'lucide-react';
 import { ShoppingBag } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
+    const navigate = useNavigate();
   return (
     <div className='flex justify-around items-center w-full mt-3'>
         <div className="brand text-3xl font-bold">
@@ -20,8 +22,8 @@ const SearchBar = () => {
             </div>
         </div>
         <div className='flex gap-5 text-zinc-600'>
-            <div className="cart"><ShoppingBag /></div>
-            <div className="notification"><Bell/></div>
+            <button onClick={()=>navigate('/cart')} className="cart cursor-pointer"><ShoppingBag /></button>
+            <button className="notification"><Bell/></button>
         </div>
     </div>
   )

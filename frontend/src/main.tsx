@@ -6,16 +6,20 @@ import {BrowserRouter ,Routes,Route} from "react-router-dom"
 import './index.css'
 import App from './App.tsx'
 import ProductPage from './pages/ProductPage.tsx';
-
+import { CartContextProvider } from './store/CartContext.tsx';
+import CartPage from "./pages/CartPage.tsx"
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root).render(
   <StrictMode>
-  <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<App />} />
-      <Route path="/Product/:id" element={<ProductPage />} />
-    </Routes>
-  </BrowserRouter>
+    <CartContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/Product/:id" element={<ProductPage />} />
+          <Route path="/cart" element={<CartPage />} />
+        </Routes>
+      </BrowserRouter>
+    </CartContextProvider>
   </StrictMode>
 )
