@@ -1,11 +1,17 @@
+import axios from "axios";
 import { useState } from "react";
 
 const Login = () => {
     const [email,setEmail] = useState<String>();
     const [password,setPassword] = useState<String>();
-    const submitFunction = ()=>{
+    const submitFunction = async ()=>{
       if(!email || !password || email === "" || password == "") return;
-      console.log(email + " " + password)
+      // console.log(email + " " + password)
+      const response = await axios.post(`${import.meta.env.VITE_Backend_URL}/user/login`,{email,password});
+      // console.log(response);
+      if(response.status == 200){
+      //  console.log(response.data.accessToken); 
+      }
     }
   return (
    <div className="flex justify-center flex-col gap-5 items-center h-full w-full">

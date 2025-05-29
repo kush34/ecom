@@ -1,12 +1,15 @@
+import axios from "axios";
 import { useState } from "react"
 
 const Register = () => {
   const [email,setEmail] = useState<String>();
   const [password,setPassword] = useState<String>();
   const [rpassword,setRPassword] = useState<String>();
-    const submitFunction = ()=>{
-      if(!email || !password || email === "" || password == "" || rpassword == "" || !rpassword) return;
-      console.log(email + " " + password + " "+ rpassword)
+    const submitFunction = async()=>{
+      if(!email || !password || email === "" || password == "" || rpassword == "" || !rpassword || rpassword !== password) return;
+      // console.log(email + " " + password + " "+ rpassword)
+      const response = await axios.post(`${import.meta.env.VITE_Backend_URL}/user/register`,{email,password});
+      console.log(response);
     }
   return (
     <div className="flex justify-center flex-col gap-5 items-center h-full w-full">

@@ -3,14 +3,14 @@ import { toast } from "sonner"
 import { createContext, useState, useEffect } from "react";
 import type {ReactNode} from "react";
 
-interface Product {
+export interface Product {
   _id: string;
   productName: string;
   description: string;
   price: number;
 }
 
-interface CartItem extends Product {
+export interface CartItem extends Product {
   quantity: number;
 }
 

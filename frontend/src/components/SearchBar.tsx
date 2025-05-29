@@ -1,9 +1,18 @@
+import { CartContext, type CartItem } from '@/store/CartContext';
 import { Bell } from 'lucide-react';
 import { ShoppingBag } from 'lucide-react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
     const navigate = useNavigate();
+    const {cartItems} = useContext(CartContext);
+    const [numberItems,setNumberItems] = useState<number>();
+    useEffect(()=>{
+        let num = 0;
+        cartItems.map((product:CartItem)=>{num += product.quantity});
+        setNumberItems(num);
+    },[cartItems])
   return (
     <div className='flex justify-around items-center w-full mt-3'>
         <div className="brand text-3xl font-bold">
@@ -22,7 +31,7 @@ const SearchBar = () => {
             </div>
         </div>
         <div className='flex gap-5 text-zinc-600'>
-            <button onClick={()=>navigate('/cart')} className="cart cursor-pointer"><ShoppingBag /></button>
+            <button onClick={()=>navigate('/cart')} className="cart cursor-pointer flex"><ShoppingBag />{numberItems}</button>
             <button className="notification"><Bell/></button>
         </div>
     </div>
