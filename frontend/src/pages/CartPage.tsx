@@ -43,8 +43,21 @@ const CartPage = () => {
           }
         </div>
         <div className="billing w-1/4">
+          <div className="text-lg">
+            {cartItems.map((product)=>{
+              return(
+                <div className="flex justify-between">
+                <div>{product.productName}</div>
+                <div>{product.quantity}</div>
+                </div>
+              )
+            })}
+          </div>
           <div className="total px-5 text-2xl font-bold">
             Total : ${totalAmount}
+          </div>
+          <div className="buy flex justify-center m-5">
+            <button className="bg-sky-600 rounded px-10 cursor-pointer py-2 text-white ">Buy</button>
           </div>
         </div>
       </div>

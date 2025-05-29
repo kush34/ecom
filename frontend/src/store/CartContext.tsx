@@ -1,6 +1,7 @@
 
 import { toast } from "sonner"
-import { createContext, useState, ReactNode } from "react";
+import { createContext, useState, useEffect } from "react";
+import type {ReactNode} from "react";
 
 interface Product {
   _id: string;
@@ -71,7 +72,6 @@ export const CartContextProvider = ({ children }: CartProviderProps) => {
       }
     }
   };
-
   return (
     <CartContext.Provider value={{ cartItems, addProductToCart, removeItemFromCart }}>
       {children}
