@@ -1,3 +1,5 @@
+
+import { toast } from "sonner"
 import { createContext, useState, ReactNode } from "react";
 
 interface Product {
@@ -42,6 +44,15 @@ export const CartContextProvider = ({ children }: CartProviderProps) => {
         { _id, productName, description, price, quantity: 1 },
       ]);
     }
+    toast.custom((t)=>(
+       <div
+    className="bg-black text-white px-4 py-2 rounded shadow-lg"
+    onClick={() => toast.dismiss(t)}
+  >
+    Added Product to the cart
+  </div>
+    )
+    )
   };
 
   const removeItemFromCart = (_id: string) => {
