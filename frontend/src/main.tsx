@@ -9,15 +9,15 @@ import ProductPage from './pages/ProductPage.tsx';
 import { CartContextProvider } from './store/CartContext.tsx';
 import CartPage from "./pages/CartPage.tsx"
 import Authentication from './pages/authentication.tsx';
-import {UserContextProvider} from "./store/UserContext.tsx"
+// import {UserContextProvider} from "./store/UserContext.tsx"
 const root = document.getElementById("root");
 
 const ProtectedRoutes = ({children})=>{
   return(
         <CartContextProvider>
-          <UserContextProvider>
+          {/* <UserContextProvider> */}
           {children}
-          </UserContextProvider>
+          {/* </UserContextProvider> */}
         </CartContextProvider>
   )
 }
