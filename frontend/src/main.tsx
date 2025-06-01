@@ -9,19 +9,37 @@ import ProductPage from './pages/ProductPage.tsx';
 import { CartContextProvider } from './store/CartContext.tsx';
 import CartPage from "./pages/CartPage.tsx"
 import Authentication from './pages/authentication.tsx';
+import {UserContextProvider} from "./store/UserContext.tsx"
 const root = document.getElementById("root");
+
+const ProtectedRoutes = ({children})=>{
+  return(
+        <CartContextProvider>
+          <UserContextProvider>
+          {children}
+          </UserContextProvider>
+        </CartContextProvider>
+  )
+}
 
 ReactDOM.createRoot(root).render(
   <StrictMode>
-    <CartContextProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />} />
+          <Route path="/" element={
+            <ProtectedRoutes>
+            <App />
+            </ProtectedRoutes>
+            } 
+            />
           <Route path="/Product/:id" element={<ProductPage />} />
-          <Route path="/cart" element={<CartPage />} />
+            <Route path="/cart" element={
+              <ProtectedRoutes>
+              <CartPage />
+              </ProtectedRoutes>
+              } />
           <Route path="/authentication" element={<Authentication />} />
         </Routes>
       </BrowserRouter>
-    </CartContextProvider>
   </StrictMode>
 )

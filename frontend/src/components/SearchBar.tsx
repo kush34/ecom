@@ -10,7 +10,7 @@ const SearchBar = () => {
     const [numberItems,setNumberItems] = useState<number>();
     useEffect(()=>{
         let num = 0;
-        cartItems.map((product:CartItem)=>{num += product.quantity});
+        if(cartItems.length != 0)cartItems?.map((product:CartItem)=>{num += product.quantity});
         setNumberItems(num);
     },[cartItems])
   return (
