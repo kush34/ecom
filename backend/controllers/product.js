@@ -9,3 +9,18 @@ export const createProduct = async (productName,description,price,images)=>{
         console.log(error);
     }
 }
+
+export const getPrice = async (orderItems) => {
+  try {
+    const results = await Promise.all(orderItems.map(async (item) => {
+      const product = await Product.findOne({ _id: item.productId });
+      return product ? product.price * item.quantity : 0;
+    }));
+
+    const totalPrice = results.reduce((acc, curr) => acc + curr, 0);
+    return totalPrice;
+  } catch (error) {
+    console.log(error);
+    return 0;
+  }
+};

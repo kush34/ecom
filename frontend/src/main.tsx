@@ -10,6 +10,7 @@ import { CartContextProvider } from './store/CartContext.tsx';
 import CartPage from "./pages/CartPage.tsx"
 import Authentication from './pages/authentication.tsx';
 // import {UserContextProvider} from "./store/UserContext.tsx"
+import PaymentSuccess from "./pages/PaymentSuccess.tsx"
 const root = document.getElementById("root");
 
 const ProtectedRoutes = ({children})=>{
@@ -39,6 +40,7 @@ ReactDOM.createRoot(root).render(
               </ProtectedRoutes>
               } />
           <Route path="/authentication" element={<Authentication />} />
+          <Route path="/payment/:id" element={<PaymentSuccess />} />
         </Routes>
       </BrowserRouter>
   </StrictMode>
