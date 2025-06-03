@@ -1,22 +1,22 @@
 
 import { toast } from "sonner"
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 import type {ReactNode} from "react";
 
-export interface Product {
+export interface ProductType {
   _id: string;
   productName: string;
   description: string;
   price: number;
 }
 
-export interface CartItem extends Product {
+export interface CartItem extends ProductType {
   quantity: number;
 }
 
 interface CartContextType {
   cartItems: CartItem[];
-  addProductToCart: (product: Product) => void;
+  addProductToCart: (product: ProductType) => void;
   removeItemFromCart: (_id: string) => void;
 }
 
@@ -29,7 +29,7 @@ interface CartProviderProps {
 export const CartContextProvider = ({ children }: CartProviderProps) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const addProductToCart = ({ _id, productName, description, price }: Product) => {
+  const addProductToCart = ({ _id, productName, description, price }: ProductType) => {
     const existingProduct = cartItems.find((product) => product._id === _id);
 
     if (existingProduct) {

@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer"
+import type {ProductType}  from "../store/CartContext.tsx"
 import { Toaster } from "@/components/ui/sonner"
 import Navbar from "@/components/Navbar"
 import SearchBar from "@/components/SearchBar"
@@ -33,7 +34,7 @@ const Home = () => {
           :
           <div className="w-full flex justify-center flex-wrap p-3">
             {
-              products.map((pro)=>{
+              products.map((pro :ProductType)=>{
                 return(
                   <Product key={pro?._id} {...pro} />
                 )

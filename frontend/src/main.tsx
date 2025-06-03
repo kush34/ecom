@@ -1,6 +1,4 @@
 import { StrictMode } from 'react'
-import React from 'react';
-import { createRoot } from 'react-dom/client'
 import ReactDOM from "react-dom/client";
 import {BrowserRouter ,Routes,Route} from "react-router-dom"
 import './index.css'
@@ -8,9 +6,10 @@ import App from './App.tsx'
 import ProductPage from './pages/ProductPage.tsx';
 import { CartContextProvider } from './store/CartContext.tsx';
 import CartPage from "./pages/CartPage.tsx"
-import Authentication from './pages/authentication.tsx';
+import Authentication from './pages/Authentication.tsx';
 // import {UserContextProvider} from "./store/UserContext.tsx"
-import PaymentSuccess from "./pages/PaymentSuccess.tsx"
+import PaymentSuccess from "./pages/PaymentSuccess.tsx";
+
 const root = document.getElementById("root");
 
 const ProtectedRoutes = ({children})=>{
@@ -23,7 +22,8 @@ const ProtectedRoutes = ({children})=>{
   )
 }
 
-ReactDOM.createRoot(root).render(
+if (root){
+    ReactDOM.createRoot(root).render(
   <StrictMode>
       <BrowserRouter>
         <Routes>
@@ -44,4 +44,5 @@ ReactDOM.createRoot(root).render(
         </Routes>
       </BrowserRouter>
   </StrictMode>
-)
+  )
+}
