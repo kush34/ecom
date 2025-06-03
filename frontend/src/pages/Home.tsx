@@ -11,7 +11,7 @@ const Home = () => {
   const [loading ,setLoading] = useState(false);
   const getProducts = async ()=>{
     setLoading(true);
-    const response = await fetch("http://localhost:3000/product/getProducts");
+    const response = await fetch(`${import.meta.env.VITE_Backend_URL}/product/getProducts`);
     const json = await response.json();
     console.log(json);
     setProducts(json);
