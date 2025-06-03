@@ -7,7 +7,8 @@ import type { CartContextType } from "@/store/CartContext";
 const CartPage = () => {
   const navigate = useNavigate();
   const {cartItems} = useContext(CartContext) as CartContextType;
-  const [totalAmount,setTotalAmount] = useState();
+  const [totalAmount, setTotalAmount] = useState<number>(0);
+
 const calculateTotal = () => {
   let sum = 0;
   cartItems.forEach((product) => {

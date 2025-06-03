@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 const ImageSlider = () => {
-    const [images,setImages] = useState(["img1.jpg", "img2.jpg","img3.jpg","img4.jpg"]);
+    const [images,_setImages] = useState(["img1.jpg", "img2.jpg","img3.jpg","img4.jpg"]);
     const [count,setCount] = useState(0);
 
     const updateImages = ()=>{
