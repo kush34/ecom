@@ -2,9 +2,11 @@ import { CartContext } from '@/store/CartContext';
 import { Minus } from 'lucide-react';
 import { Plus } from 'lucide-react';
 import { useContext } from 'react';
+import type { ProductType } from '@/store/CartContext';
+import type { CartContextType } from '@/store/CartContext';
 
-const Product = ({productName,price,description,_id,quantity}) => {
-  const {addProductToCart,removeItemFromCart} = useContext(CartContext);
+const Product = ({productName,price,description,_id,quantity}:ProductType) => {
+  const { addProductToCart, removeItemFromCart } = useContext(CartContext) as CartContextType;
   return (
     <div className="m-3 bg-zinc-100 w-1/4 text-zinc-700 hover:bg-zinc-200 hover:scale-101 ease-in duration-100 cursor-pointer shadow-lg">
         <div className="images">

@@ -12,7 +12,7 @@ import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 
 const root = document.getElementById("root");
 
-const ProtectedRoutes = ({children})=>{
+const ProtectedRoutes = ({children} : any)=>{
   return(
         <CartContextProvider>
           {/* <UserContextProvider> */}

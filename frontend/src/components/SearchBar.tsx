@@ -3,10 +3,10 @@ import { Bell } from 'lucide-react';
 import { ShoppingBag } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import type { CartContextType } from '@/store/CartContext';
 const SearchBar = () => {
     const navigate = useNavigate();
-    const {cartItems} = useContext(CartContext);
+    const {cartItems} = useContext(CartContext) as CartContextType; 
     const [numberItems,setNumberItems] = useState<number>();
     useEffect(()=>{
         let num = 0;

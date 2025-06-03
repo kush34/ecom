@@ -3,17 +3,18 @@ import { CartContext } from "@/store/CartContext"
 import Product from "@/components/Product";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import type { CartContextType } from "@/store/CartContext";
 const CartPage = () => {
   const navigate = useNavigate();
-  const {cartItems} = useContext(CartContext);
+  const {cartItems} = useContext(CartContext) as CartContextType;
   const [totalAmount,setTotalAmount] = useState();
-  const calculateTotal = ()=>{
-    let sum = 0;
-    cartItems.map((product)=>{
-      sum += product.price * product.quantity;
-    })
-    setTotalAmount(sum)
-  }
+const calculateTotal = () => {
+  let sum = 0;
+  cartItems.forEach((product) => {
+    sum += product.price * product.quantity;
+  });
+  setTotalAmount(sum);
+};
 
 const handleBuyBtn = async () => {
   const orderItems = cartItems.map(item => ({
@@ -40,7 +41,7 @@ const handleBuyBtn = async () => {
       theme: { color: "#3399cc" },
     };
 
-    const rzp = new window.Razorpay(options);
+    const rzp:any = new window.Razorpay(options);
     rzp.open();
   }
 };

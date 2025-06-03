@@ -8,13 +8,14 @@ export interface ProductType {
   productName: string;
   description: string;
   price: number;
+  quantity?:number;
 }
 
 export interface CartItem extends ProductType {
   quantity: number;
 }
 
-interface CartContextType {
+export interface CartContextType {
   cartItems: CartItem[];
   addProductToCart: (product: ProductType) => void;
   removeItemFromCart: (_id: string) => void;
