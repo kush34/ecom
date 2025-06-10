@@ -26,3 +26,23 @@ export const checkRefreshToken = async(token)=>{
       return ({ accessToken: newAccessToken });
     });
 }
+
+export const verifyToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if(!authHeader) res.status(403).send("wrong");
+  const accessToken = authHeader.split(" ")[1];
+
+    // console.log(accessToken)
+  try {
+    const decoded = jwt.verify(accessToken, process.env.Acess_Secret);
+    // console.log(`Middleware token result: ${decoded.userId}`)
+    req.user = decoded.userId;
+    next(); 
+  } catch (error) {
+    console.log(error)
+    if (error.name === "TokenExpiredError") {
+      return res.status(403).send("Access token expired"); 
+    }
+    return res.status(401).send("Invalid access token");
+  }
+};

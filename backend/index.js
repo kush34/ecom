@@ -3,12 +3,15 @@ import userRouter from "./routers/userRouter.js";
 import productRouter from "./routers/productRouter.js";
 import cors from "cors";
 import paymentRouter from "./routers/paymentRouter.js";
+import cookieParser from "cookie-parser";
 import "dotenv/config";
 import connectDB from "./config/database.js"; 
 connectDB();
 const app = express();
+
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors({
     origin:process.env.Frontend_URL,
     Credential:true

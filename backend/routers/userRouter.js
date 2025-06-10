@@ -1,6 +1,6 @@
 import express from "express";
 import User from "../models/userModel.js";
-import { checkRefreshToken, hashPass, jwtAccess, jwtRefreshToken } from "../controllers/auth.js";
+import { checkRefreshToken, hashPass, jwtAccess, jwtRefreshToken, verifyToken } from "../controllers/auth.js";
 
 const router = express.Router();
 
@@ -61,4 +61,19 @@ router.post("/refresh-token", (req, res) => {
     }
   });
   
+  router.get("/userInfo",verifyToken,async (req,res)=>{
+    try {
+        const user= req.user;
+        console.log(`API /userInfo hit :${user}`);
+        const dbUser = await User.findOne({_id:user}).select("-password");
+        if(!dbUser){
+            res.status(401).send("something went wrong");
+            return;
+        }
+        console.log(dbUser);
+        res.send(dbUser);
+    } catch (error) {
+        res.send(error);
+    }
+  })
 export default router;
