@@ -7,8 +7,8 @@ const router = express.Router();
 
 router.post("/register",async (req,res)=>{
     try {
+        if(!req.body.email || !req.body.password) return res.status(401).send("not enough data");
         const {email,password} = req.body;
-        if(!email || !password) return res.status(401).send("not enough data");
         
         const dbUser = await User.findOne({email});
         if(dbUser) res.status(400).send("something went wrong");
@@ -21,6 +21,7 @@ router.post("/register",async (req,res)=>{
         res.status(200).send("user registered successfully");
     } catch (error) {
         console.log(error);
+        res.status(500).send("internal server error");
     }
 })
 
@@ -41,6 +42,7 @@ router.post("/login",async (req,res)=>{
         res.json({accessToken});
     } catch (error) {
         console.log(error);
+        res.status(500).send("internal server error");
     }
 })
 
