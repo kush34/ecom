@@ -5,9 +5,13 @@ import Navbar from "@/components/Navbar"
 import SearchBar from "@/components/SearchBar"
 import ImageSlider from "@/components/ImageSlider"
 import Product from "@/components/Product"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { UserContext } from "@/store/UserContext.tsx"
 const Home = () => {
   const [products,setProducts] = useState([]);
+  const userCtx = useContext(UserContext);
+  const user = userCtx?.user;
+
   const [loading ,setLoading] = useState(false);
   const getProducts = async ()=>{
     setLoading(true);
@@ -19,6 +23,7 @@ const Home = () => {
   }
   useEffect(()=>{
     getProducts();
+    console.log(user)
   },[])
   return (
     <div className="w-full h-screen">

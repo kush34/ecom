@@ -7,7 +7,7 @@ import ProductPage from './pages/ProductPage.tsx';
 import { CartContextProvider } from './store/CartContext.tsx';
 import CartPage from "./pages/CartPage.tsx"
 import Authentication from './pages/Authentication.tsx';
-// import {UserContextProvider} from "./store/UserContext.tsx"
+import {UserContextProvider} from "./store/UserContext.tsx"
 import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 
 const root = document.getElementById("root");
@@ -15,9 +15,11 @@ const root = document.getElementById("root");
 const ProtectedRoutes = ({children} : any)=>{
   return(
         <CartContextProvider>
+          <UserContextProvider>
           {/* <UserContextProvider> */}
           {children}
           {/* </UserContextProvider> */}
+          </UserContextProvider>
         </CartContextProvider>
   )
 }

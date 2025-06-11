@@ -1,17 +1,20 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
     const [email,setEmail] = useState<String>();
     const [password,setPassword] = useState<String>();
+    const navigate = useNavigate();
     const submitFunction = async ()=>{
       if(!email || !password || email === "" || password == "") return;
       // console.log(email + " " + password)
       const response = await axios.post(`${import.meta.env.VITE_Backend_URL}/user/login`,{email,password});
       // console.log(response);
       if(response.status == 200){
-      //  console.log(response.data.accessToken); 
+        //  console.log(response.data.accessToken); 
         localStorage.setItem("accessToken",JSON.stringify(response.data.accessToken));
+        navigate("/")
       }
     }
   return (
