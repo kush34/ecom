@@ -29,7 +29,7 @@ export const checkRefreshToken = async(token)=>{
 
 export const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
-  if(!authHeader) res.status(403).send("wrong");
+  if(!authHeader) res.status(403).send("no auth token found wrong");
   const accessToken = authHeader.split(" ")[1];
 
     // console.log(accessToken)

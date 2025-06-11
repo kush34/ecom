@@ -1,5 +1,5 @@
 import Home from "./pages/Home";
-import "./utils/axiosService.js"
+import "./utils/axiosService.tsx"
 
 const App = ()=>{
   return(

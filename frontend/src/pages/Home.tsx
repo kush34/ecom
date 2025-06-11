@@ -17,7 +17,7 @@ const Home = () => {
     setLoading(true);
     const response = await fetch(`${import.meta.env.VITE_Backend_URL}/product/getProducts`);
     const json = await response.json();
-    console.log(json);
+    // console.log(json);
     setProducts(json);
     setLoading(false);
   }
