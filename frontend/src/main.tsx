@@ -9,6 +9,7 @@ import CartPage from "./pages/CartPage.tsx"
 import Authentication from './pages/Authentication.tsx';
 import {UserContextProvider} from "./store/UserContext.tsx"
 import PaymentSuccess from "./pages/PaymentSuccess.tsx";
+import UserDetails from './pages/UserDetails.tsx';
 
 const root = document.getElementById("root");
 
@@ -42,6 +43,7 @@ if (root){
               </ProtectedRoutes>
               } />
           <Route path="/authentication" element={<Authentication />} />
+          <Route path="/userDetails" element={<UserDetails />} />
           <Route path="/payment/:id" element={<PaymentSuccess />} />
         </Routes>
       </BrowserRouter>

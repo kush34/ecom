@@ -1,12 +1,16 @@
+import { CircleUser } from 'lucide-react';
 import { CartContext, type CartItem } from '@/store/CartContext';
 import { Bell } from 'lucide-react';
 import { ShoppingBag } from 'lucide-react';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { CartContextType } from '@/store/CartContext';
+import { UserContext } from '@/store/UserContext';
 const SearchBar = () => {
     const navigate = useNavigate();
-    const {cartItems} = useContext(CartContext) as CartContextType; 
+    const {cartItems} = useContext(CartContext) as CartContextType;
+    const cartCtx = useContext(UserContext);
+    const user = cartCtx.user !== null ? cartCtx.user : null; 
     const [numberItems,setNumberItems] = useState<number>();
     useEffect(()=>{
         let num = 0;
@@ -33,6 +37,7 @@ const SearchBar = () => {
         <div className='flex gap-5 text-zinc-600'>
             <button onClick={()=>navigate('/cart')} className="cart cursor-pointer flex"><ShoppingBag />{numberItems}</button>
             <button className="notification"><Bell/></button>
+            {user !== null && <button onClick={()=>navigate("/userDetails")} className='cursor-pointer'><CircleUser/></button>}
         </div>
     </div>
   )

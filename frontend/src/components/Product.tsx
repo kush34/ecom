@@ -14,7 +14,7 @@ const Product = ({productName,price,description,_id,quantity}:ProductType) => {
         </div>
         <div className="ProductName mx-5 text-xl flex justify-start font-bold">{productName}</div>
         <div className="bottom flex justify-between w-full p-2">
-            <div className="Price text-xl font-bold flex justify-start mx-5">${price}</div>
+            <div className="Price text-xl font-bold flex justify-start mx-5">₹{price}</div>
             {
               quantity &&
               <>
