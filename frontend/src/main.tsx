@@ -14,13 +14,13 @@ const root = document.getElementById("root");
 
 const ProtectedRoutes = ({children} : any)=>{
   return(
-        <CartContextProvider>
           <UserContextProvider>
+        <CartContextProvider>
           {/* <UserContextProvider> */}
           {children}
           {/* </UserContextProvider> */}
-          </UserContextProvider>
         </CartContextProvider>
+          </UserContextProvider>
   )
 }
 

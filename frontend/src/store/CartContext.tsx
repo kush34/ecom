@@ -1,7 +1,9 @@
 
 import { toast } from "sonner"
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import type {ReactNode} from "react";
+import { UserContext } from "./UserContext";
+import { useNavigate } from "react-router-dom";
 
 export interface ProductType {
   _id: string;
@@ -29,8 +31,19 @@ interface CartProviderProps {
 
 export const CartContextProvider = ({ children }: CartProviderProps) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  if (!UserContext) {
+    console.error("UserContext is not available");
+    return null; // or show fallback
+  }
+  const userCtx = useContext(UserContext);
+  const user = userCtx ? userCtx.user : null;
+  const navigate = useNavigate();
 
   const addProductToCart = ({ _id, productName, description, price }: ProductType) => {
+    if (user === null) {
+      navigate("/authentication");
+      return;
+    }
     const existingProduct = cartItems.find((product) => product._id === _id);
 
     if (existingProduct) {
@@ -58,6 +71,10 @@ export const CartContextProvider = ({ children }: CartProviderProps) => {
   };
 
   const removeItemFromCart = (_id: string) => {
+    if (user === null) {
+      navigate("/authentication");
+      return;
+    }
     const existingProduct = cartItems.find((product) => product._id === _id);
     if (existingProduct) {
       if (existingProduct.quantity > 1) {

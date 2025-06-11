@@ -4,11 +4,13 @@ import Product from "@/components/Product";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import type { CartContextType } from "@/store/CartContext";
+import { UserContext } from "@/store/UserContext";
 const CartPage = () => {
   const navigate = useNavigate();
   const {cartItems} = useContext(CartContext) as CartContextType;
   const [totalAmount, setTotalAmount] = useState<number>(0);
-
+  const userCtx = useContext(UserContext);
+  const user = userCtx ? userCtx.user : null;
 const calculateTotal = () => {
   let sum = 0;
   cartItems.forEach((product) => {
@@ -46,7 +48,11 @@ const handleBuyBtn = async () => {
     rzp.open();
   }
 };
-
+    useEffect(() => {
+    if (user === null) {
+      navigate("/authentication");
+    }
+  }, [user, navigate]);
   useEffect(()=>{
     calculateTotal();
   },[cartItems])

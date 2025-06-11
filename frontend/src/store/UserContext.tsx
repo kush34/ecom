@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import type ReactNode from "react";
+import type {ReactNode }from "react";
 
 type User = {
   id: string;
@@ -42,13 +42,15 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) =
   };
 
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("accessToken")) as string;
-    if (!token) {
+    const raw = localStorage.getItem("accessToken");
+    if (!raw) {
       setUser(null);
-       console.log(`no token found`)
-    } else {
-      getUserInfo(token);
+      console.log("No token found");
+      return;
     }
+
+    const token = JSON.parse(raw) as string;
+    getUserInfo(token);
   }, []);
 
   return (
