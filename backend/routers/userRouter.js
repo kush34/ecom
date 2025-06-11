@@ -76,4 +76,28 @@ router.post("/refresh-token", (req, res) => {
         res.send(error);
     }
   })
+
+router.post("/updateCart",verifyToken,async(req,res)=>{
+    try{
+        const user = req.user;
+        const {cartItems} = req.body;
+        if(!cartItems || !Array.isArray(cartItems)){
+            res.status(401).send("not enough data");
+            return;
+        }
+        const dbUser = await User.findByIdAndUpdate(
+            {_id:user},
+            {$set:{cart:cartItems}},
+            {new:true}
+        );
+        if(!dbUser){
+            res.status(404).send("something went wrong");
+            return;
+        }
+        res.status(200).send("Update success full");
+    }catch(error){
+        res.status(500).send("something went wrong internal error");
+        console.log(error.message)
+    }
+  })
 export default router;
