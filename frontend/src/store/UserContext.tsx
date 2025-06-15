@@ -1,3 +1,4 @@
+import { axiosInstace } from "@/utils/axiosService";
 import React, { createContext, useEffect, useState } from "react";
 import type {ReactNode }from "react";
 
@@ -23,18 +24,13 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) =
 
   const getUserInfo = async (token: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_Backend_URL}/user/userInfo`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setUser(data);
+      const request = await axiosInstace.get("/user/userInfo");
+      if (request.status == 200) {
+        setUser(request.data);
       } else {
         setUser(null);
       }
+      console.log()
     } catch (error) {
       console.error("Error fetching user info:", error);
       setUser(null);

@@ -1,9 +1,10 @@
 import jwt from "jsonwebtoken";
 import brypt from "bcrypt";
 import "dotenv/config";
+import User from "../models/userModel.js";
 
 export const jwtAccess = (userId)=>{
-    return jwt.sign({userId},process.env.Acess_Secret,{expiresIn:'15m'});
+    return jwt.sign({userId},process.env.Access_Secret,{expiresIn:'15m'});
 }
 export const jwtRefreshToken = (userId)=>{
     return jwt.sign({userId},process.env.Refresh_Secret,{expiresIn:'7d'});
@@ -19,12 +20,27 @@ export const hashPass =  (pass)=>{
 }
 
 export const checkRefreshToken = async(token)=>{  
-    jwt.verify(token, process.env.Refresh_Secret, (err, user) => {
-      if (err) return false;
-  
-      const newAccessToken = jwt.sign({ userId: user.userId }, ACCESS_SECRET, { expiresIn: '15m' });
-      return ({ accessToken: newAccessToken });
-    });
+  try {
+    const result = jwt.verify(token,process.env.Refresh_Secret);
+    if(!result){
+      return false;
+    }
+    //checking if user exists in the db
+    const dbUser = await User.findById({_id:result?.userId});
+
+
+    if(dbUser){
+      //returning new Refresh and Access Token.
+      const newRefreshToken = jwtRefreshToken(result?.userId);
+      const newAcessToken = jwtAccess(result?.userId);
+      return {newAcessToken,newRefreshToken};
+    }else{
+      return false;
+    }
+  } catch (error) {
+    return false;
+    console.log(`Could not verify Refresh Token : ${error.message}`);
+  }
 }
 
 export const verifyToken = (req, res, next) => {
@@ -34,7 +50,7 @@ export const verifyToken = (req, res, next) => {
 
     // console.log(accessToken)
   try {
-    const decoded = jwt.verify(accessToken, process.env.Acess_Secret);
+    const decoded = jwt.verify(accessToken, process.env.Access_Secret);
     // console.log(`Middleware token result: ${decoded.userId}`)
     req.user = decoded.userId;
     next(); 

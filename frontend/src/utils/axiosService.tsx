@@ -1,6 +1,11 @@
 import axios from "axios";
 
-axios.interceptors.request.use(
+export const axiosInstace = axios.create({
+  baseURL:import.meta.env.VITE_Backend_URL,
+  withCredentials:true
+})
+
+axiosInstace.interceptors.request.use(
   async function (config) {
     const token = localStorage.getItem("accessToken");
     if (token) {
@@ -15,13 +20,37 @@ axios.interceptors.request.use(
   }
 );
 
-  axios.interceptors.response.use(async function (response) {
-    if(response.status === 403){
-        const request = await axios.post(`${import.meta.env.VITE_Backend_URL}/user/refresh-token`);
-        // console.log(request);
+  axiosInstace.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response &&
+      (error.response.status === 401 || error.response.status === 403) &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+      try {
+        // Refresh the token
+        const res = await axios.post(
+          `${import.meta.env.VITE_Backend_URL}/user/refresh-token`,
+          null,
+          { withCredentials: true }
+        );
+
+        const newToken = res.data.accessToken;
+        localStorage.setItem("accessToken", JSON.stringify(newToken));
+
+        // Retry the failed request with the new token
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return axiosInstace(originalRequest);
+      } catch (refreshError) {
+        console.error("Token refresh failed");
+        return Promise.reject(refreshError);
+      }
     }
-    return response;
-  }, function (error) {
-    console.log(`refreshtoken error`)
+
     return Promise.reject(error);
-  });
+  }
+);

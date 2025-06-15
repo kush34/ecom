@@ -9,7 +9,7 @@ const Login = () => {
     const submitFunction = async ()=>{
       if(!email || !password || email === "" || password == "") return;
       // console.log(email + " " + password)
-      const response = await axios.post(`${import.meta.env.VITE_Backend_URL}/user/login`,{email,password});
+      const response = await axios.post(`${import.meta.env.VITE_Backend_URL}/user/login`,{email,password},{withCredentials:true});
       // console.log(response);
       if(response.status == 200){
         //  console.log(response.data.accessToken); 

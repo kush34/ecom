@@ -36,8 +36,8 @@ router.post("/login",async (req,res)=>{
         const refreshToken = jwtRefreshToken(dbUser._id); 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true,      // Use only on HTTPS
-            sameSite: 'Strict' // or 'Lax'
+            secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
+            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
         });
         res.json({accessToken});
     } catch (error) {
@@ -46,18 +46,22 @@ router.post("/login",async (req,res)=>{
     }
 })
 
-router.post("/refresh-token", (req, res) => {
+router.post("/refresh-token", async(req, res) => {
     try {
       const token = req.cookies.refreshToken;
-      if (!token) return res.sendStatus(401);
-      
-      const result = checkRefreshToken(token);
-      if (!result) return res.sendStatus(403);
-      
-      res.status(200).json(result); 
+      if (!token) return res.status(401).send("no token found...");
+        
+      const result = await checkRefreshToken(token);
+      if (!result) return res.status(401).send("could not verify your Token, pls login again");
+      res.cookie('refreshToken', result?.newRefreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
+            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
+        });
+      res.status(200).json({accessToken:result?.newAcessToken}); 
     } catch (error) {
       console.log(error);
-      res.sendStatus(500);
+      res.status(500).send("Internal server error");
     }
   });
   
