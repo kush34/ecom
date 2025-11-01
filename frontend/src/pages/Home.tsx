@@ -26,7 +26,7 @@ const Home = () => {
     console.log(user)
   },[])
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-screen flex flex-col justify-between">
        <Toaster />
       <Navbar/>
       <SearchBar/>
@@ -48,7 +48,7 @@ const Home = () => {
           </div>
         }
       </div>
-      <div className="h-1/2 mt-5">
+      <div className="bottom-0 h-1/2 mt-5">
         <Footer/>
       </div>
     </div>

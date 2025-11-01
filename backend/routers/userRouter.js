@@ -11,7 +11,7 @@ router.post("/register",async (req,res)=>{
         const {email,password} = req.body;
         
         const dbUser = await User.findOne({email});
-        if(dbUser) res.status(400).send("something went wrong");
+        if(dbUser) return res.status(400).send("something went wrong");
 
         const hashedPass = hashPass(password);
         const newUser = await User.create({
