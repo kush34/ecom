@@ -10,7 +10,7 @@ const SearchBar = () => {
     const navigate = useNavigate();
     const {cartItems} = useContext(CartContext) as CartContextType;
     const cartCtx = useContext(UserContext);
-    const user = cartCtx.user !== null ? cartCtx.user : null; 
+    const user = cartCtx?.user !== null ? cartCtx?.user : null; 
     const [numberItems,setNumberItems] = useState<number>();
     useEffect(()=>{
         let num = 0;

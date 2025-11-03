@@ -1,6 +1,6 @@
 import { axiosInstace } from "@/utils/axiosService";
 import React, { createContext, useEffect, useState } from "react";
-import type {ReactNode }from "react";
+import type { ReactNode } from "react";
 
 type User = {
   id: string;
@@ -24,7 +24,9 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) =
 
   const getUserInfo = async (token: string) => {
     try {
-      const request = await axiosInstace.get("/user/userInfo");
+      const request = await axiosInstace.get("/user/userInfo", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       if (request.status == 200) {
         setUser(request.data);
       } else {
