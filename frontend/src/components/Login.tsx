@@ -13,7 +13,6 @@ const Login = () => {
       // console.log(response);
       if(response.status == 200){
         //  console.log(response.data.accessToken); 
-        localStorage.setItem("accessToken",JSON.stringify(response.data.accessToken));
         navigate("/")
       }
     }

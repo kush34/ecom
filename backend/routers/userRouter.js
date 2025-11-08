@@ -39,6 +39,11 @@ router.post("/login",async (req,res)=>{
             secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
             sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
         });
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
+            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
+        });
         res.json({accessToken});
     } catch (error) {
         console.log(error);

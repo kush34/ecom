@@ -22,11 +22,9 @@ type UserContextProviderProps = {
 const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>(null);
 
-  const getUserInfo = async (token: string) => {
+  const getUserInfo = async () => {
     try {
-      const request = await axiosInstace.get("/user/userInfo", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const request = await axiosInstace.get("/user/userInfo");
       if (request.status == 200) {
         setUser(request.data);
       } else {
@@ -40,15 +38,7 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) =
   };
 
   useEffect(() => {
-    const raw = localStorage.getItem("accessToken");
-    if (!raw) {
-      setUser(null);
-      console.log("No token found");
-      return;
-    }
-
-    const token = JSON.parse(raw) as string;
-    getUserInfo(token);
+    getUserInfo();
   }, []);
 
   return (

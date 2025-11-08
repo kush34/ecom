@@ -16,6 +16,7 @@ app.use(cors({
     origin:process.env.Frontend_URL,
     credentials:true
 }))
+app.use(cookieParser())
 app.use("/user",userRouter);
 app.use("/product",productRouter);
 app.use("/payment",paymentRouter);

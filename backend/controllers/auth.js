@@ -44,9 +44,11 @@ export const checkRefreshToken = async(token)=>{
 }
 
 export const verifyToken = (req, res, next) => {
+  console.log('Cookies in Request',req.cookies);
   const authHeader = req.headers.authorization;
-  if(!authHeader) res.status(403).send("no auth token found wrong");
-  const accessToken = authHeader.split(" ")[1];
+  const isCookie = req.cookies.accessToken;
+  if(!authHeader || !isCookie) res.status(403).send("no auth token found wrong");
+  const accessToken = authHeader.split(" ")[1] || isCookie;
 
     // console.log(accessToken)
   try {
