@@ -1,16 +1,19 @@
 import { axiosInstace } from "@/utils/axiosService";
 import React, { createContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import type { ProductType } from "./CartContext";
 
 type User = {
   id: string;
   name: string;
   email: string;
+  cart: ProductType[]
 } | null;
 
 type UserContextType = {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
+  loading: boolean;
 };
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -21,8 +24,9 @@ type UserContextProviderProps = {
 
 const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>(null);
-
+  const [loading, setLoading] = useState<boolean>(false)
   const getUserInfo = async () => {
+    setLoading(true)
     try {
       const request = await axiosInstace.get("/user/userInfo");
       if (request.status == 200) {
@@ -34,6 +38,8 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) =
     } catch (error) {
       console.error("Error fetching user info:", error);
       setUser(null);
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -42,7 +48,7 @@ const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) =
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, loading }}>
       {children}
     </UserContext.Provider>
   );
