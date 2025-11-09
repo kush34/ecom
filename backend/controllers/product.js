@@ -7,6 +7,7 @@ export const createProduct = async (productName,description,price,images)=>{
         if(newProduct) return newProduct;
     } catch (error) {
         console.log(error);
+        return error;
     }
 }
 
@@ -21,6 +22,6 @@ export const getPrice = async (orderItems) => {
     return totalPrice;
   } catch (error) {
     console.log(error);
-    return 0;
+    return error;
   }
 };

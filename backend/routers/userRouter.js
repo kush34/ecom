@@ -1,141 +1,18 @@
 import express from "express";
-import User from "../models/userModel.js";
-import { checkRefreshToken, hashPass, jwtAccess, jwtRefreshToken, verifyToken } from "../controllers/auth.js";
+import { verifyToken } from "../controllers/auth.js";
+import { login, refreshToken, register, updateCart, userInfo } from "../controllers/userController.js";
 
 const router = express.Router();
 
 
-router.post("/register", async (req, res) => {
-    try {
-        if (!req.body.email || !req.body.password) return res.status(401).send("not enough data");
-        const { email, password } = req.body;
+router.post("/register", register)
 
-        const dbUser = await User.findOne({ email });
-        if (dbUser) return res.status(400).send("something went wrong");
+router.post("/login", login)
 
-        const hashedPass = hashPass(password);
-        const newUser = await User.create({
-            email,
-            password: hashedPass
-        });
-        res.status(200).send("user registered successfully");
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("internal server error");
-    }
-})
+router.post("/refresh-token", refreshToken);
 
-router.post("/login", async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        if (!email || !password) return res.status(401).send("not enough data");
+router.get("/userInfo", verifyToken, userInfo);
 
-        const dbUser = await User.findOne({ email });
+router.post("/updateCart", verifyToken, updateCart)
 
-        const accessToken = jwtAccess(dbUser._id);
-        const refreshToken = jwtRefreshToken(dbUser._id);
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
-            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
-        });
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
-            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
-        });
-        res.json({ accessToken });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("internal server error");
-    }
-})
-
-router.post("/refresh-token", async (req, res) => {
-    try {
-        const token = req.cookies.refreshToken;
-        if (!token) return res.status(401).send("no token found...");
-
-        const result = await checkRefreshToken(token);
-        if (!result) return res.status(401).send("could not verify your Token, pls login again");
-        res.cookie('refreshToken', result?.newRefreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
-            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
-        });
-        res.cookie('accessToken', result?.newAcessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
-            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
-        });
-        res.status(200).json({ accessToken: result?.newAcessToken });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("Internal server error");
-    }
-});
-
-router.get("/userInfo", verifyToken, async (req, res) => {
-    try {
-        const userId = req.user;
-
-        const dbUser = await User.findById(userId)
-            .select("-password")
-            .populate({
-                path: "cart._id",
-                select: "productName price description images"
-            })
-            .lean();
-
-        if (!dbUser) return res.status(404).send("User not found");
-
-        const simplifiedCart = (dbUser.cart || []).map((item) => {
-            const product = item._id; // populated Product doc
-            if (!product || typeof product !== "object") return null;
-            return {
-                _id: product._id,
-                productName: product.productName,
-                description: product.description,
-                price: product.price,
-                images: product.images,
-                quantity: item.quantity
-            };
-        }).filter(Boolean);
-        return res.status(200).json({
-            _id: dbUser._id,
-            email: dbUser.email,
-            cart: simplifiedCart
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Internal server error");
-    }
-});
-
-
-
-router.post("/updateCart", verifyToken, async (req, res) => {
-    try {
-        const user = req.user;
-        const { cartItems } = req.body;
-        if (!cartItems || !Array.isArray(cartItems)) {
-            res.status(401).send("not enough data");
-            return;
-        }
-        const dbUser = await User.findByIdAndUpdate(
-            { _id: user },
-            { $set: { cart: cartItems } },
-            { new: true }
-        );
-        if (!dbUser) {
-            res.status(404).send({ error: "could not verify your account pls login again and retry." });
-            return;
-        }
-        console.log(dbUser)
-        res.status(200).send("Update success full");
-    } catch (error) {
-        res.status(500).send("something went wrong internal error");
-        console.log(error.message)
-    }
-})
 export default router;

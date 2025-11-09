@@ -97,12 +97,11 @@ export const CartContextProvider = ({ children }: CartProviderProps) => {
       navigate("/authentication");
       return;
     }
-  if(!user) return;
+    if (!user) return;
 
     const existingProduct = cartItems.find((product) => product._id === _id);
     if (!existingProduct) return; // nothing to remove
 
-    // compute new cart synchronously
     const updatedCart =
       existingProduct.quantity > 1
         ? cartItems.map((product) =>
@@ -110,19 +109,14 @@ export const CartContextProvider = ({ children }: CartProviderProps) => {
         )
         : cartItems.filter((product) => product._id !== _id);
 
-    // keep previous state for possible rollback
     const previousCart = cartItems;
 
-    // optimistic UI update
     setCartItems(updatedCart);
 
     try {
-      // send new cart to server (axiosInstance should be configured with baseURL and withCredentials)
       const resp = await axiosInstace.post("/user/updateCart", { cartItems: updatedCart });
 
-      // axios throws for non-2xx, but check just in case
       if (resp.status !== 200) {
-        // rollback and notify
         setCartItems(previousCart);
         const serverMessage = resp.data?.error || "Could not update cart.";
         toast.custom((t) => (
@@ -131,7 +125,6 @@ export const CartContextProvider = ({ children }: CartProviderProps) => {
           </div>
         ));
       } else {
-        // success feedback (optional)
         toast.custom((t) => (
           <div className="bg-black text-white px-4 py-2 rounded shadow-lg" onClick={() => toast.dismiss(t)}>
             Cart updated
@@ -140,7 +133,6 @@ export const CartContextProvider = ({ children }: CartProviderProps) => {
       }
     } catch (err: any) {
       console.error("removeItemFromCart error:", err);
-      // rollback optimistic update
       setCartItems(previousCart);
 
       const serverMessage = err?.response?.data?.error || err?.message || "Failed to update cart.";
