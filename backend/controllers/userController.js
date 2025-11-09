@@ -1,7 +1,8 @@
 import { checkRefreshToken, hashPass, jwtAccess, jwtRefreshToken } from "../controllers/auth.js";
 import User from "../models/userModel.js";
+import bcrypt from "bcrypt";
 
-export const updateCart = async (req,res) => {
+export const updateCart = async (req, res) => {
     try {
         const user = req.user;
         const { cartItems } = req.body;
@@ -26,7 +27,7 @@ export const updateCart = async (req,res) => {
     }
 }
 
-export const userInfo = async (req,res) => {
+export const userInfo = async (req, res) => {
     try {
         const userId = req.user;
 
@@ -63,7 +64,7 @@ export const userInfo = async (req,res) => {
     }
 }
 
-export const refreshToken = async (req,res) => {
+export const refreshToken = async (req, res) => {
     try {
         const token = req.cookies.refreshToken;
         if (!token) return res.status(401).send("no token found...");
@@ -87,12 +88,19 @@ export const refreshToken = async (req,res) => {
     }
 }
 
-export const login = async (req,res) => {
+export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) return res.status(401).send("not enough data");
 
         const dbUser = await User.findOne({ email });
+
+        if (!dbUser) res.status(404).send({ error: "Wrong Credentials. Pls check if you have right credentials." })
+
+        const isPasswordCorrect = await bcrypt.compare(password, dbUser.password);
+        if (!isPasswordCorrect) {
+            return res.status(400).send({ error: "Wrong Credentials" });
+        }
 
         const accessToken = jwtAccess(dbUser._id);
         const refreshToken = jwtRefreshToken(dbUser._id);
@@ -113,7 +121,7 @@ export const login = async (req,res) => {
     }
 }
 
-export const register = async (req,res) => {
+export const register = async (req, res) => {
     try {
         if (!req.body.email || !req.body.password) return res.status(401).send("not enough data");
         const { email, password } = req.body;
