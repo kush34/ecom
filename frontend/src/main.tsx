@@ -11,6 +11,7 @@ import { UserContextProvider } from "./store/UserContext.tsx"
 import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 import UserDetails from './pages/UserDetails.tsx';
 import NotFound from './pages/NotFound.tsx';
+import { Toaster } from './components/ui/sonner.tsx';
 
 const root = document.getElementById("root");
 
@@ -30,6 +31,7 @@ if (root) {
   ReactDOM.createRoot(root).render(
     <StrictMode>
       <BrowserRouter>
+        <Toaster />
         <Routes>
           <Route path="/" element={
             <ProtectedRoutes>

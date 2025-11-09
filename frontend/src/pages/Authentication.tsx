@@ -6,6 +6,7 @@ const Authentication = () => {
     const [flag,setFlag] = useState(true);
   return (
     <div>
+        
         <div className="main w-full h-screen flex">
             <div className="display w-1/2 flex flex-col justify-center items-center h-screen">
                 <div className="info flex flex-col items-center">
