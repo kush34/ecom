@@ -16,9 +16,10 @@ const Login = () => {
         { email, password },
         { withCredentials: true }
       );
-
-      toast("Login Successful");
-      navigate("/");
+      if(response.status === 200){
+        toast("Login Successful");
+        navigate("/");
+      }
     } catch (error: any) {
       if (error.response) {
 

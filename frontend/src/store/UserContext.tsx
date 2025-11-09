@@ -5,7 +5,6 @@ import type { ProductType } from "./CartContext";
 
 type User = {
   id: string;
-  name: string;
   email: string;
   cart: ProductType[]
 } | null;

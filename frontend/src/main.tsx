@@ -46,7 +46,11 @@ if (root) {
             </ProtectedRoutes>
           } />
           <Route path="/authentication" element={<Authentication />} />
-          <Route path="/userDetails" element={<UserDetails />} />
+          <Route path="/userDetails" element={
+            <ProtectedRoutes>
+              <UserDetails />
+            </ProtectedRoutes>
+          } />
           <Route path="/payment/:id" element={<PaymentSuccess />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
