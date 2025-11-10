@@ -148,16 +148,20 @@ export const login = async (req, res) => {
 
         const accessToken = jwtAccess(dbUser._id);
         const refreshToken = jwtRefreshToken(dbUser._id);
-        res.cookie('refreshToken', refreshToken, {
+        const isProduction = process.env.NODE_ENV === "production";
+
+        res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
-            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax'
+            secure: isProduction, // only HTTPS in prod
+            sameSite: isProduction ? "None" : "Lax",
         });
-        res.cookie('accessToken', accessToken, {
+
+        res.cookie("accessToken", accessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
-            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax'
+            secure: isProduction,
+            sameSite: isProduction ? "None" : "Lax",
         });
+
         res.json({ accessToken });
     } catch (error) {
         console.log(error);
