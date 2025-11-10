@@ -3,10 +3,18 @@ import React, { createContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { ProductType } from "./CartContext";
 
+export type address = {
+  city: string,
+  pincode: string,
+  contact: string
+  address: string,
+}
+
 type User = {
   id: string;
   email: string;
   cart: ProductType[]
+  addresses: address[]
 } | null;
 
 type UserContextType = {

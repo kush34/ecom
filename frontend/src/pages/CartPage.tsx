@@ -2,13 +2,16 @@ import { useContext, useEffect, useState } from "react"
 import { CartContext } from "@/store/CartContext"
 import Product from "@/components/Product";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import type { CartContextType } from "@/store/CartContext";
 import { UserContext } from "@/store/UserContext";
+import { AddressManager } from "@/components/AddressManager";
+import { toast } from "sonner";
+import { axiosInstace } from "@/utils/axiosService";
 const CartPage = () => {
   const navigate = useNavigate();
   const { cartItems } = useContext(CartContext) as CartContextType;
   const [totalAmount, setTotalAmount] = useState<number>(0);
+
   const userCtx = useContext(UserContext);
   const user = userCtx ? userCtx.user : null;
   const userLoading = userCtx ? userCtx.loading : false;
@@ -21,14 +24,19 @@ const CartPage = () => {
   };
 
   const handleBuyBtn = async () => {
+    if (user?.addresses[0] === undefined || user?.addresses[0] === null) {
+      return toast.error("Pls Add Address to place an Order")
+    }
     const orderItems = cartItems.map(item => ({
-      productId: item._id,
-      quantity: item.quantity
+      product_id: item._id,
+      quantity: item.quantity,
+      unit_price: item.price
     }));
 
-    const { data: { key } } = await axios.get(`${import.meta.env.VITE_Backend_URL}/getkey`);
-    const response = await axios.post(`${import.meta.env.VITE_Backend_URL}/payment/createOrder`, {
-      orderItems: orderItems
+    const { data: { key } } = await axiosInstace.get(`${import.meta.env.VITE_Backend_URL}/getkey`);
+    const response = await axiosInstace.post(`${import.meta.env.VITE_Backend_URL}/payment/createOrder`, {
+      orderItems: orderItems,
+      address: user?.addresses[0],
     });
 
     console.log(response); // Check if this logs the correct structure
@@ -50,10 +58,12 @@ const CartPage = () => {
     }
   };
   useEffect(() => {
-    if (user === null && userLoading) {
+    if (userLoading) return;
+    if (!user) {
       navigate("/authentication");
     }
-  }, [user, navigate]);
+  }, [user, userLoading, navigate]);
+
   useEffect(() => {
     calculateTotal();
   }, [cartItems])
@@ -94,8 +104,11 @@ const CartPage = () => {
               )
             })}
           </div>
+          <div className="px-5 flex text-sm font-light text-black">
+            <AddressManager address={user?.addresses[0] ? user.addresses[0] : null} />
+          </div>
           <div className="total px-5 text-2xl font-bold">
-            Total : ${totalAmount}
+            Total : ₹{totalAmount}
           </div>
           <div className="buy flex justify-center m-5">
             <button onClick={() => handleBuyBtn()} className="bg-sky-600 rounded px-10 cursor-pointer py-2 text-white ">Buy</button>

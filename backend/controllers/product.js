@@ -14,7 +14,7 @@ export const createProduct = async (productName,description,price,images)=>{
 export const getPrice = async (orderItems) => {
   try {
     const results = await Promise.all(orderItems.map(async (item) => {
-      const product = await Product.findOne({ _id: item.productId });
+      const product = await Product.findOne({ _id: item.product_id });
       return product ? product.price * item.quantity : 0;
     }));
 

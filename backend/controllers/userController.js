@@ -55,6 +55,7 @@ export const userInfo = async (req, res) => {
         }).filter(Boolean);
         return res.status(200).json({
             _id: dbUser._id,
+            addresses: dbUser.addresses,
             email: dbUser.email,
             cart: simplifiedCart
         });
@@ -63,6 +64,49 @@ export const userInfo = async (req, res) => {
         res.status(500).send("Internal server error");
     }
 }
+
+export const addAddress = async (req, res) => {
+    try {
+        const userId = req.user;
+        const { address } = req.body;
+
+        if (!address || typeof address !== "object") {
+            return res.status(400).json({ error: "Address data is missing or invalid" });
+        }
+
+        const { city, contact, pincode } = address;
+
+        if (!city || typeof city !== "string" || city.trim().length < 2) {
+            return res.status(400).json({ error: "City name is required and must be a valid string" });
+        }
+
+        if (!contact || typeof contact !== "string" || !/^[6-9]\d{9}$/.test(contact)) {
+            return res.status(400).json({ error: "Contact must be a valid 10-digit Indian number" });
+        }
+
+        if (
+            pincode === undefined ||
+            (typeof pincode !== "string" && typeof pincode !== "number") ||
+            !/^\d{6}$/.test(pincode.toString())
+        ) {
+            return res.status(400).json({ error: "Pincode must be a valid 6-digit number" });
+        }
+
+        const dbUser = await User.findByIdAndUpdate(
+            userId,
+            { $push: { addresses: address } },
+            { new: true }
+        );
+
+        if (!dbUser) return res.status(404).json({ error: "User not found" });
+
+        return res.status(200).json({ success: true, address });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Could not save address" });
+    }
+};
+
 
 export const refreshToken = async (req, res) => {
     try {
