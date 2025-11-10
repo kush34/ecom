@@ -5,6 +5,7 @@ import { verifyToken } from "../controllers/auth.js";
 const router = express.Router();
 
 router.post("/createOrder", verifyToken, checkout)
-router.post("/paymentverification", verifyToken, paymentVerification);
+// dont add token verify as this endpoint will be hit by payment gateway from their server.
+router.post("/paymentverification", paymentVerification);
 
 export default router;
