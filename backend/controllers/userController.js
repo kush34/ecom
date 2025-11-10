@@ -151,7 +151,7 @@ export const login = async (req, res) => {
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
-            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax'
         });
         res.cookie('accessToken', accessToken, {
             httpOnly: true,
