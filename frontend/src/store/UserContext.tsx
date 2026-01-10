@@ -11,7 +11,7 @@ export type address = {
 }
 
 type User = {
-  id: string;
+  _id: string;
   email: string;
   cart: ProductType[]
   addresses: address[]

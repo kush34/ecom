@@ -3,7 +3,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import type {ColumnDef} from "@tanstack/react-table"
+import type { ColumnDef } from "@tanstack/react-table"
 import {
   Table,
   TableBody,
@@ -12,24 +12,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { useEffect, useState } from "react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  onSelectionChange?: (rows: TData[]) => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  onSelectionChange
 }: DataTableProps<TData, TValue>) {
+
+  const [rowSelection, setRowSelection] = useState({})
+
   const table = useReactTable({
     data,
     columns,
+    state: { rowSelection },
+    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
   })
 
+  useEffect(() => {
+    if (!onSelectionChange) return
+    const selectedRows = table
+      .getSelectedRowModel()
+      .rows
+      .map(r => r.original)
+    onSelectionChange(selectedRows)
+  }, [rowSelection])
+
   return (
-    <div className="overflow-hidden rounded-md  ">
+    <div className="overflow-hidden rounded-md border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -40,9 +58,9 @@ export function DataTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 )
               })}

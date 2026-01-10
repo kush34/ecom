@@ -26,6 +26,7 @@ export function AddressManager({ address }: { address: address | null }) {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
+    console.log(address)
     const validateData = () => {
         const { address, city, pincode, contact } = formData;
 
