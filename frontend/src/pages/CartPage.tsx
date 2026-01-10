@@ -7,6 +7,9 @@ import { UserContext } from "@/store/UserContext";
 import { AddressManager } from "@/components/AddressManager";
 import { toast } from "sonner";
 import { axiosInstace } from "@/utils/axiosService";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/data-table";
+import { columns } from "@/components/CheckOutBill"
 const CartPage = () => {
   const navigate = useNavigate();
   const { cartItems } = useContext(CartContext) as CartContextType;
@@ -70,17 +73,17 @@ const CartPage = () => {
   return (
     <div className="p-5 w-full h-screen">
       <div className="flex justify-between">
-        <div className="title font-bold text-3xl">
+        <div className="title font-bold text-3xl mx-3">
           Your Cart
         </div>
         <div className="backbtn text-2xl">
-          <button className="cursor-pointer" onClick={() => navigate("/")}>Back</button>
+          <Button className="cursor-pointer" onClick={() => navigate("/")}>Back</Button>
         </div>
       </div>
       <div className="cartlanding flex w-full">
         <div className="cartItems w-3/4">
           {cartItems.length > 0 ?
-            <div className="flex flex-wrap">
+            <div className="flex flex-wrap gap-5">
               {
                 cartItems.map((product) => {
                   return (
@@ -93,22 +96,15 @@ const CartPage = () => {
             <div>No items found</div>
           }
         </div>
-        <div className="billing w-1/4">
-          <div className="text-lg">
-            {cartItems.map((product) => {
-              return (
-                <div className="flex justify-between">
-                  <div>{product.productName}</div>
-                  <div>{product.quantity}</div>
-                </div>
-              )
-            })}
+        <div className="billing w-1/4 mr-12">
+          <div className="text-lg mt-5">
+            <DataTable columns={columns} data={cartItems} />
           </div>
-          <div className="px-5 flex text-sm font-light text-black">
-            <AddressManager address={user?.addresses[0] ? user.addresses[0] : null} />
-          </div>
-          <div className="total px-5 text-2xl font-bold">
+          <div className="total mt-5 text-2xl font-bold">
             Total : ₹{totalAmount}
+          </div>
+          <div className=" flex text-sm font-light text-black">
+            <AddressManager address={user?.addresses[0] ? user.addresses[0] : null} />
           </div>
           <div className="buy flex justify-center m-5">
             <button onClick={() => handleBuyBtn()} className="bg-sky-600 rounded px-10 cursor-pointer py-2 text-white ">Buy</button>

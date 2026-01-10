@@ -18,12 +18,12 @@ const SearchBar = () => {
         setNumberItems(num);
     },[cartItems])
   return (
-    <div className='flex justify-around items-center w-full mt-3'>
-        <div className="brand text-3xl font-bold">
+    <div className='flex justify-around items-center gap-3 w-full mt-3 px-2'>
+        <div className="brand text-md xl:text-3xl font-bold">
             EcomBrand.com
         </div>
         <div className="searchbar w-2/3 flex justify-center items-center border border-zinc-600 rounded">
-            <div className='mx-5 w-1/5 border-r border-zinc-600'>
+            <div className='hidden md:inline mx-5 w-1/5 border-r border-zinc-600'>
                 <select name="All category" id="" className='outline-none'>
                     <option value="All category" className='font-medium text-zinc-600'>All Category</option>
                     <option value="All category" className='font-medium text-zinc-600'>Indic</option>
@@ -34,10 +34,10 @@ const SearchBar = () => {
                 <input type="text" className='w-full px-5 py-2 outline-none rounded' placeholder='Search for product or brand' />
             </div>
         </div>
-        <div className='flex gap-5 text-zinc-600'>
+        <div className='flex gap-5 text-zinc-600 px-2'>
             <button onClick={()=>navigate('/cart')} className="cart cursor-pointer flex"><ShoppingBag />{numberItems}</button>
-            <button className="notification"><Bell/></button>
-            {user !== null && <button onClick={()=>navigate("/userDetails")} className='cursor-pointer'><CircleUser/></button>}
+            <button className="hidden md:inline notification"><Bell/></button>
+            {user !== null && <button onClick={()=>navigate("/userDetails")} className='hidden md:inline cursor-pointer'><CircleUser/></button>}
         </div>
     </div>
   )

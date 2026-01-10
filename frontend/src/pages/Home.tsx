@@ -38,7 +38,7 @@ const Home = () => {
           loading ?
             <div className="flex justify-center items-center text-xl">loading ...</div>
             :
-            <div className="w-full flex justify-center flex-wrap p-3">
+            <div className="w-full flex justify-center flex-wrap gap-5 p-3">
               {
                 products.map((pro: ProductType) => {
                   return (

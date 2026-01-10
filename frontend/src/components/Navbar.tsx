@@ -6,7 +6,7 @@ const Navbar = () => {
   const userCtx = useContext(UserContext);
   const user = userCtx?.user;
   return (
-    <div className="text-grey-600 flex justify-between py-2 text-zinc-500 border-b w-full border-b-zinc-500 bg-zinc-100">
+    <div className="hidden md:flex text-grey-600 flex justify-between py-2 text-zinc-500 border-b w-full border-b-zinc-500 bg-zinc-100">
       <div className="mx-5 flex items-center gap-1 cursor-pointer">
         <Smartphone size={16} />
         Download BeliBeli App
