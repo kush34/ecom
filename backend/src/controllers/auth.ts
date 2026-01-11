@@ -3,15 +3,24 @@ import brypt from "bcrypt";
 import "dotenv/config";
 import User from "../models/userModel.js";
 import { NextFunction, Request, Response } from "express";
+import { error } from "node:console";
 
 export const jwtAccess = (userId: string, role: string): string => {
-  return jwt.sign({ userId, role }, process.env.Access_Secret, { expiresIn: '15m' });
+  const accessKey = process.env.Access_Secret
+  if (!accessKey) {
+    throw new error("Refresh_Secret missing")
+  }
+  return jwt.sign({ userId, role }, accessKey, { expiresIn: '15m' });
 }
 export const jwtRefreshToken = (userId: string, role: string): string => {
-  return jwt.sign({ userId, role }, process.env.Refresh_Secret, { expiresIn: '7d' });
+  const refreshKey = process.env.Refresh_Secret
+  if (!refreshKey) {
+    throw new error("Refresh_Secret missing")
+  }
+  return jwt.sign({ userId, role }, refreshKey, { expiresIn: '7d' });
 }
 
-export const hashPass = (pass: string)=> {
+export const hashPass = (pass: string) => {
   try {
     return brypt.hashSync(pass, 12);
   } catch (error) {
@@ -22,7 +31,11 @@ export const hashPass = (pass: string)=> {
 
 export const checkRefreshToken = async (token) => {
   try {
-    const result = jwt.verify(token, process.env.Refresh_Secret);
+    const refreshKey = process.env.Refresh_Secret
+    if (!refreshKey) {
+      throw new error("Refresh_Secret missing")
+    }
+    const result = jwt.verify(token, refreshKey);
     if (!result) {
       return false;
     }
@@ -32,8 +45,8 @@ export const checkRefreshToken = async (token) => {
 
     if (dbUser) {
       //returning new Refresh and Access Token.
-      const newRefreshToken = jwtRefreshToken(result?.userId,dbUser.role);
-      const newAcessToken = jwtAccess(result?.userId,dbUser.role);
+      const newRefreshToken = jwtRefreshToken(result?.userId, dbUser.role);
+      const newAcessToken = jwtAccess(result?.userId, dbUser.role);
       return { newAcessToken, newRefreshToken };
     } else {
       return false;
@@ -44,7 +57,7 @@ export const checkRefreshToken = async (token) => {
   }
 }
 
-export const verifyToken = (req:Request, res:Response, next:NextFunction) => {
+export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   console.log("Cookies in Request:", req.cookies);
 
   // read from cookie or Authorization header
@@ -53,9 +66,12 @@ export const verifyToken = (req:Request, res:Response, next:NextFunction) => {
   if (!accessToken) {
     return res.status(403).send("No auth token found");
   }
-
+  const accessKey = process.env.Access_Secret
+  if (!accessKey) {
+    throw new error("Refresh_Secret missing")
+  }
   try {
-    const decoded = jwt.verify(accessToken, process.env.Access_Secret);
+    const decoded = jwt.verify(accessToken, accessKey);
     req.user = decoded.userId;
     next();
   } catch (error) {
