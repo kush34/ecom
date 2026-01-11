@@ -11,12 +11,12 @@ export const jwtRefreshToken = (userId: string, role: string): string => {
   return jwt.sign({ userId, role }, process.env.Refresh_Secret, { expiresIn: '7d' });
 }
 
-export const hashPass = (pass: string): string => {
+export const hashPass = (pass: string)=> {
   try {
     return brypt.hashSync(pass, 12);
-
   } catch (error) {
     console.log(`hashPass in auth.js went wrong ${error}`);
+    return error;
   }
 }
 
@@ -39,8 +39,8 @@ export const checkRefreshToken = async (token) => {
       return false;
     }
   } catch (error) {
+    console.log(`Could not verify Refresh Token : ${error}`);
     return false;
-    console.log(`Could not verify Refresh Token : ${error.message}`);
   }
 }
 
@@ -61,7 +61,7 @@ export const verifyToken = (req:Request, res:Response, next:NextFunction) => {
   } catch (error) {
     console.error("JWT verification error:", error);
 
-    if (error.name === "TokenExpiredError") {
+    if ((error as Error).name === "TokenExpiredError") {
       return res.status(403).send("Access token expired");
     }
     return res.status(401).send("Invalid access token");

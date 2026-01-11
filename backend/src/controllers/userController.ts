@@ -2,6 +2,7 @@ import { checkRefreshToken, hashPass, jwtAccess, jwtRefreshToken } from "./auth.
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
+import { Cart } from "../types/index.js";
 
 export const updateCart = async (req:Request, res:Response) => {
     try {
@@ -23,8 +24,8 @@ export const updateCart = async (req:Request, res:Response) => {
         console.log(dbUser)
         res.status(200).send("Update success full");
     } catch (error) {
-        res.status(500).send("something went wrong internal error");
-        console.log(error.message)
+        console.log(error)
+        return res.status(500).send("something went wrong internal error");
     }
 }
 
@@ -47,10 +48,6 @@ export const userInfo = async (req:Request, res:Response) => {
             if (!product || typeof product !== "object") return null;
             return {
                 _id: product._id,
-                productName: product.productName,
-                description: product.description,
-                price: product.price,
-                images: product.images,
                 quantity: item.quantity
             };
         }).filter(Boolean);
@@ -141,7 +138,7 @@ export const login = async (req:Request, res:Response) => {
 
         const dbUser = await User.findOne({ email });
 
-        if (!dbUser) res.status(404).send({ error: "Wrong Credentials. Pls check if you have right credentials." })
+        if (!dbUser) return res.status(404).send({ error: "Wrong Credentials. Pls check if you have right credentials." })
 
         const isPasswordCorrect = await bcrypt.compare(password, dbUser.password);
         if (!isPasswordCorrect) {
