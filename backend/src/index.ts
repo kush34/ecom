@@ -1,11 +1,11 @@
 import express, { urlencoded } from "express";
-import userRouter from "./routers/userRouter.js";
-import productRouter from "./routers/productRouter.js";
 import cors from "cors";
-import paymentRouter from "./routers/paymentRouter.js";
+import userRouter from "./routers/userRouter"
+import productRouter from "./routers/productRouter"
+import paymentRouter from "./routers/paymentRouter"
 import cookieParser from "cookie-parser";
 import "dotenv/config";
-import connectDB from "./config/database.js"; 
+import connectDB from "./config/database"; 
 connectDB();
 const app = express();
 
