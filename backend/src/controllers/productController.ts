@@ -1,14 +1,20 @@
 import mongoose from "mongoose";
 import Product from "../models/productModel.js";
+import type { tProduct } from "../types/index.js";
 
-export const createProduct = async (productName,description,price,images)=>{
-    try {
-        const newProduct = await Product.create({productName,description,price,images});
-        if(newProduct) return newProduct;
-    } catch (error) {
-        console.log(error);
-        return error;
-    }
+export const createProduct = async (product: tProduct) => {
+  try {
+    const newProduct = await Product.create({
+      productName: product.productName,
+      description: product.description,
+      price: product.price,
+      images: product.images
+    });
+    if (newProduct) return newProduct;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 }
 
 export const getPrice = async (orderItems) => {

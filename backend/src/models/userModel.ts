@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const USER_ROLES = ["user", "admin"]
 
+
 const userSchema = new mongoose.Schema({
     email: {
         type: String,

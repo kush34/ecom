@@ -2,15 +2,16 @@ import jwt from "jsonwebtoken";
 import brypt from "bcrypt";
 import "dotenv/config";
 import User from "../models/userModel.js";
+import { NextFunction, Request, Response } from "express";
 
-export const jwtAccess = (userId, role) => {
+export const jwtAccess = (userId: string, role: string): string => {
   return jwt.sign({ userId, role }, process.env.Access_Secret, { expiresIn: '15m' });
 }
-export const jwtRefreshToken = (userId, role) => {
+export const jwtRefreshToken = (userId: string, role: string): string => {
   return jwt.sign({ userId, role }, process.env.Refresh_Secret, { expiresIn: '7d' });
 }
 
-export const hashPass = (pass) => {
+export const hashPass = (pass: string): string => {
   try {
     return brypt.hashSync(pass, 12);
 
@@ -31,8 +32,8 @@ export const checkRefreshToken = async (token) => {
 
     if (dbUser) {
       //returning new Refresh and Access Token.
-      const newRefreshToken = jwtRefreshToken(result?.userId);
-      const newAcessToken = jwtAccess(result?.userId);
+      const newRefreshToken = jwtRefreshToken(result?.userId,dbUser.role);
+      const newAcessToken = jwtAccess(result?.userId,dbUser.role);
       return { newAcessToken, newRefreshToken };
     } else {
       return false;
@@ -43,7 +44,7 @@ export const checkRefreshToken = async (token) => {
   }
 }
 
-export const verifyToken = (req, res, next) => {
+export const verifyToken = (req:Request, res:Response, next:NextFunction) => {
   console.log("Cookies in Request:", req.cookies);
 
   // read from cookie or Authorization header

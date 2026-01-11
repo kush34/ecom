@@ -1,8 +1,9 @@
-import { checkRefreshToken, hashPass, jwtAccess, jwtRefreshToken } from "../controllers/auth.js";
+import { checkRefreshToken, hashPass, jwtAccess, jwtRefreshToken } from "./auth.js";
 import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
+import { Request, Response } from "express";
 
-export const updateCart = async (req, res) => {
+export const updateCart = async (req:Request, res:Response) => {
     try {
         const user = req.user;
         const { cartItems } = req.body;
@@ -27,7 +28,7 @@ export const updateCart = async (req, res) => {
     }
 }
 
-export const userInfo = async (req, res) => {
+export const userInfo = async (req:Request, res:Response) => {
     try {
         const userId = req.user;
 
@@ -66,7 +67,7 @@ export const userInfo = async (req, res) => {
     }
 }
 
-export const addAddress = async (req, res) => {
+export const addAddress = async (req:Request, res:Response) => {
     try {
         const userId = req.user;
         const { address } = req.body;
@@ -109,7 +110,7 @@ export const addAddress = async (req, res) => {
 };
 
 
-export const refreshToken = async (req, res) => {
+export const refreshToken = async (req:Request, res:Response) => {
     try {
         const token = req.cookies.refreshToken;
         if (!token) return res.status(401).send("no token found...");
@@ -119,12 +120,12 @@ export const refreshToken = async (req, res) => {
         res.cookie('refreshToken', result?.newRefreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
-            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
+            sameSite: process.env.NODE_ENV == "Production" ? 'strict' : 'lax'
         });
         res.cookie('accessToken', result?.newAcessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV == "Production",      // Use only on HTTPS
-            sameSite: process.env.NODE_ENV == "Production" ? 'Strict' : 'Lax'
+            sameSite: process.env.NODE_ENV == "Production" ? 'strict' : 'lax'
         });
         res.status(200).json({ accessToken: result?.newAcessToken });
     } catch (error) {
@@ -133,7 +134,7 @@ export const refreshToken = async (req, res) => {
     }
 }
 
-export const login = async (req, res) => {
+export const login = async (req:Request, res:Response) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) return res.status(401).send("not enough data");
@@ -147,20 +148,20 @@ export const login = async (req, res) => {
             return res.status(400).send({ error: "Wrong Credentials" });
         }
 
-        const accessToken = jwtAccess(dbUser._id,dbUser.role);
-        const refreshToken = jwtRefreshToken(dbUser._id,dbUser.role);
+        const accessToken = jwtAccess(dbUser._id.toString(),dbUser.role);
+        const refreshToken = jwtRefreshToken(dbUser._id.toString(),dbUser.role);
         const isProduction = process.env.NODE_ENV === "production";
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: isProduction, // only HTTPS in prod
-            sameSite: isProduction ? "None" : "Lax",
+            sameSite: isProduction ? "none" : "lax",
         });
 
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
             secure: isProduction,
-            sameSite: isProduction ? "None" : "Lax",
+            sameSite: isProduction ? "none" : "lax",
         });
 
         res.json({ accessToken });
@@ -170,7 +171,7 @@ export const login = async (req, res) => {
     }
 }
 
-export const register = async (req, res) => {
+export const register = async (req:Request, res:Response) => {
     try {
         if (!req.body.email || !req.body.password) return res.status(401).send("not enough data");
         const { email, password } = req.body;
