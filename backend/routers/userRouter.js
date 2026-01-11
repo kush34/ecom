@@ -15,6 +15,6 @@ router.get("/userInfo", verifyToken, userInfo);
 
 router.post("/addAddress", verifyToken, addAddress);
 
-router.post("/updateCart", verifyToken, updateCart)
+router.post("/updateCart", verifyToken, updateCart);
 
 export default router;

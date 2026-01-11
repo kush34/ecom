@@ -3,11 +3,11 @@ import brypt from "bcrypt";
 import "dotenv/config";
 import User from "../models/userModel.js";
 
-export const jwtAccess = (userId) => {
-  return jwt.sign({ userId }, process.env.Access_Secret, { expiresIn: '15m' });
+export const jwtAccess = (userId, role) => {
+  return jwt.sign({ userId, role }, process.env.Access_Secret, { expiresIn: '15m' });
 }
-export const jwtRefreshToken = (userId) => {
-  return jwt.sign({ userId }, process.env.Refresh_Secret, { expiresIn: '7d' });
+export const jwtRefreshToken = (userId, role) => {
+  return jwt.sign({ userId, role }, process.env.Refresh_Secret, { expiresIn: '7d' });
 }
 
 export const hashPass = (pass) => {

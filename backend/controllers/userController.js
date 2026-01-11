@@ -55,6 +55,7 @@ export const userInfo = async (req, res) => {
         }).filter(Boolean);
         return res.status(200).json({
             _id: dbUser._id,
+            role:dbUser.role,
             addresses: dbUser.addresses,
             email: dbUser.email,
             cart: simplifiedCart
@@ -146,8 +147,8 @@ export const login = async (req, res) => {
             return res.status(400).send({ error: "Wrong Credentials" });
         }
 
-        const accessToken = jwtAccess(dbUser._id);
-        const refreshToken = jwtRefreshToken(dbUser._id);
+        const accessToken = jwtAccess(dbUser._id,dbUser.role);
+        const refreshToken = jwtRefreshToken(dbUser._id,dbUser.role);
         const isProduction = process.env.NODE_ENV === "production";
 
         res.cookie("refreshToken", refreshToken, {

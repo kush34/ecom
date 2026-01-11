@@ -13,6 +13,7 @@ export type address = {
 type User = {
   _id: string;
   email: string;
+  role: string,
   cart: ProductType[]
   addresses: address[]
 } | null;
