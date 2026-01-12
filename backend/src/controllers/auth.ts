@@ -57,7 +57,7 @@ export const checkRefreshToken = async (token) => {
   }
 }
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   console.log("Cookies in Request:", req.cookies);
 
   // read from cookie or Authorization header
@@ -72,6 +72,38 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
   }
   try {
     const decoded = jwt.verify(accessToken, accessKey);
+    const dbUser = await User.findById(decoded.userId);
+    if (!dbUser) return res.status(400).send({ message: "Invalid Token." })
+    req.user = decoded.userId;
+    next();
+  } catch (error) {
+    console.error("JWT verification error:", error);
+
+    if ((error as Error).name === "TokenExpiredError") {
+      return res.status(403).send("Access token expired");
+    }
+    return res.status(401).send("Invalid access token");
+  }
+};
+
+export const adminVerifyToken = async (req: Request, res: Response, next: NextFunction) => {
+  console.log("Cookies in Request:", req.cookies);
+
+  // read from cookie or Authorization header
+  const accessToken = req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
+
+  if (!accessToken) {
+    return res.status(403).send("No auth token found");
+  }
+  const accessKey = process.env.Access_Secret
+  if (!accessKey) {
+    throw new error("Refresh_Secret missing")
+  }
+  try {
+    const decoded = jwt.verify(accessToken, accessKey);
+    const dbUser = await User.findById(decoded.userId);
+    if (!dbUser || dbUser.role != 'admin') return res.status(400).send({ message: "Invalid Token." })
+
     req.user = decoded.userId;
     next();
   } catch (error) {

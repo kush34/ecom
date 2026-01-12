@@ -7,6 +7,16 @@ import { Order } from "../models/orderModel.js";
 import mongoose from "mongoose";
 
 
+export const getAdminOrders = async (req: Request, res: Response) => {
+    try {
+        const orders = await Order.find().populate('products.product_id');
+        res.send(orders);
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({ message: "Something went wrong." })
+    }
+}
+
 export const getOrders = async (req: Request, res: Response) => {
     try {
         const user = req.user;
