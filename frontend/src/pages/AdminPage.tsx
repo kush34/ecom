@@ -1,31 +1,59 @@
 import { UserContext } from '@/store/UserContext'
-import { useContext, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { axiosInstace } from '@/utils/axiosService'
+import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
+import { DataTable } from '@/components/data-table'
+import { columns, type AdminOrder } from '@/components/admin-colums/admin-columns'
+import { Card, CardContent } from '@/components/ui/card'
 
 const AdminPage = () => {
-  const userCtx = useContext(UserContext);
-  const user = userCtx ? userCtx.user : null;
-  const userLoading = userCtx?.loading;
-  const navigate = useNavigate();
+  const userCtx = useContext(UserContext)
+  const user = userCtx?.user
+  const userLoading = userCtx?.loading
+  const navigate = useNavigate()
+  const [orders, setOrders] = useState<AdminOrder[]>([])
+
+  const getAdminOrders = async () => {
+    try {
+      const request = await axiosInstace("/user/admin/getOrders")
+      if (request.status === 200) {
+        setOrders(request.data)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error("Could not fetch orders")
+    }
+  }
 
   useEffect(() => {
-    if (userLoading) return;
-    console.log(user)
+    if (userLoading) return
     if (!userLoading && (!user || user?.role !== 'admin')) {
       toast.error("You do not have access to this page.")
       navigate("/")
     }
   }, [user, userLoading, navigate])
 
-  if (userLoading) return <div>loading Details</div>
+  useEffect(() => {
+    getAdminOrders()
+  }, [])
 
-  if (!user || user?.role !== 'admin') return null;
+  if (userLoading) return <div>loading Details</div>
+  if (!user || user?.role !== 'admin') return null
 
   return (
-    <div>
-      <div className="top p-5">
-        <span className='text-2xl font-bold'>Admin Dashboard</span>
+    <div className="min-h-screen bg-gray-50 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+          <p className="text-gray-600 text-sm mt-1">{orders.length} total orders</p>
+        </div>
+        
+        <Card className='border-none'>
+          <CardContent className="">
+            <DataTable columns={columns} data={orders} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
