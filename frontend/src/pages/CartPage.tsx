@@ -62,7 +62,9 @@ const CartPage = () => {
   };
   useEffect(() => {
     if (userLoading) return;
-    if (!user) {
+    if (!userLoading && !user) {
+      console.log("usernot loading")
+      console.log("user",user)
       navigate("/authentication");
     }
   }, [user, userLoading, navigate]);
