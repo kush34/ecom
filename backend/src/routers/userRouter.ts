@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyToken } from "../controllers/auth.js";
-import { addAddress, login, refreshToken, register, updateCart, userInfo } from "../controllers/userController.js";
+import { addAddress, login, refreshToken, register, updateCart, userInfo, getOrders } from "../controllers/userController.js";
 
 const router = express.Router();
 
@@ -17,4 +17,5 @@ router.post("/addAddress", verifyToken, addAddress);
 
 router.post("/updateCart", verifyToken, updateCart);
 
+router.get("/getOrders", verifyToken, getOrders)
 export default router;

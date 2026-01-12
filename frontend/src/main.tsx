@@ -12,6 +12,7 @@ import PaymentSuccess from "./pages/PaymentSuccess.tsx";
 import UserDetails from './pages/UserDetails.tsx';
 import NotFound from './pages/NotFound.tsx';
 import { Toaster } from './components/ui/sonner.tsx';
+import AdminPage from './pages/AdminPage.tsx';
 
 const root = document.getElementById("root");
 
@@ -19,9 +20,7 @@ const ProtectedRoutes = ({ children }: any) => {
   return (
     <UserContextProvider>
       <CartContextProvider>
-        {/* <UserContextProvider> */}
         {children}
-        {/* </UserContextProvider> */}
       </CartContextProvider>
     </UserContextProvider>
   )
@@ -49,6 +48,11 @@ if (root) {
           <Route path="/userDetails" element={
             <ProtectedRoutes>
               <UserDetails />
+            </ProtectedRoutes>
+          } />
+          <Route path="/admin" element={
+            <ProtectedRoutes>
+              <AdminPage />
             </ProtectedRoutes>
           } />
           <Route path="/payment/:id" element={<PaymentSuccess />} />

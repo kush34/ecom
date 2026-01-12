@@ -3,8 +3,23 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { Cart } from "../types/index.js";
+import { Order } from "../models/orderModel.js";
+import mongoose from "mongoose";
 
-export const updateCart = async (req:Request, res:Response) => {
+
+export const getOrders = async (req: Request, res: Response) => {
+    try {
+        const user = req.user;
+        const orders = await Order.find({ user_id: user }).populate('products.product_id')
+        console.log(orders)
+        res.send(orders)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send({ message: "Something went wrong." })
+    }
+}
+
+export const updateCart = async (req: Request, res: Response) => {
     try {
         const user = req.user;
         const { cartItems } = req.body;
@@ -29,10 +44,9 @@ export const updateCart = async (req:Request, res:Response) => {
     }
 }
 
-export const userInfo = async (req:Request, res:Response) => {
+export const userInfo = async (req: Request, res: Response) => {
     try {
         const userId = req.user;
-
         const dbUser = await User.findById(userId)
             .select("-password")
             .populate({
@@ -43,17 +57,20 @@ export const userInfo = async (req:Request, res:Response) => {
 
         if (!dbUser) return res.status(404).send("User not found");
 
-        const simplifiedCart = (dbUser.cart || []).map((item) => {
-            const product = item._id; // populated Product doc
+        const simplifiedCart = (dbUser.cart || []).map((item: any) => {
+            const product = item._id;
             if (!product || typeof product !== "object") return null;
             return {
                 _id: product._id,
+                productName: product.productName,
+                price: product.price,
                 quantity: item.quantity
             };
         }).filter(Boolean);
+
         return res.status(200).json({
             _id: dbUser._id,
-            role:dbUser.role,
+            role: dbUser.role,
             addresses: dbUser.addresses,
             email: dbUser.email,
             cart: simplifiedCart
@@ -64,7 +81,7 @@ export const userInfo = async (req:Request, res:Response) => {
     }
 }
 
-export const addAddress = async (req:Request, res:Response) => {
+export const addAddress = async (req: Request, res: Response) => {
     try {
         const userId = req.user;
         const { address } = req.body;
@@ -107,7 +124,7 @@ export const addAddress = async (req:Request, res:Response) => {
 };
 
 
-export const refreshToken = async (req:Request, res:Response) => {
+export const refreshToken = async (req: Request, res: Response) => {
     try {
         const token = req.cookies.refreshToken;
         if (!token) return res.status(401).send("no token found...");
@@ -131,7 +148,7 @@ export const refreshToken = async (req:Request, res:Response) => {
     }
 }
 
-export const login = async (req:Request, res:Response) => {
+export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) return res.status(401).send("not enough data");
@@ -145,8 +162,8 @@ export const login = async (req:Request, res:Response) => {
             return res.status(400).send({ error: "Wrong Credentials" });
         }
 
-        const accessToken = jwtAccess(dbUser._id.toString(),dbUser.role);
-        const refreshToken = jwtRefreshToken(dbUser._id.toString(),dbUser.role);
+        const accessToken = jwtAccess(dbUser._id.toString(), dbUser.role);
+        const refreshToken = jwtRefreshToken(dbUser._id.toString(), dbUser.role);
         const isProduction = process.env.NODE_ENV === "production";
 
         res.cookie("refreshToken", refreshToken, {
@@ -168,7 +185,7 @@ export const login = async (req:Request, res:Response) => {
     }
 }
 
-export const register = async (req:Request, res:Response) => {
+export const register = async (req: Request, res: Response) => {
     try {
         if (!req.body.email || !req.body.password) return res.status(401).send("not enough data");
         const { email, password } = req.body;

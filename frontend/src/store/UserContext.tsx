@@ -13,7 +13,7 @@ export type address = {
 type User = {
   _id: string;
   email: string;
-  role: string,
+  role: 'user' | 'admin',
   cart: ProductType[]
   addresses: address[]
 } | null;
@@ -32,17 +32,17 @@ type UserContextProviderProps = {
 
 const UserContextProvider: React.FC<UserContextProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User>(null);
-  const [loading, setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
   const getUserInfo = async () => {
     setLoading(true)
     try {
       const request = await axiosInstace.get("/user/userInfo");
       if (request.status == 200) {
         setUser(request.data);
+        // console.log("userSet",request.data)
       } else {
         setUser(null);
       }
-      console.log()
     } catch (error) {
       console.error("Error fetching user info:", error);
       setUser(null);
