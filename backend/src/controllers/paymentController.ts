@@ -11,7 +11,7 @@ import { error } from "console";
 // ----------------------------
 const KEY_SECRET = process.env.key_secret;
 
-export const checkout = async (req:Request, res:Response) => {
+export const checkout = async (req: Request, res: Response) => {
   try {
     const { orderItems, address } = req.body;
     console.log("Checkout Order:", orderItems);
@@ -25,9 +25,9 @@ export const checkout = async (req:Request, res:Response) => {
 
     const price = await getPrice(orderItems);
     if (price <= 0) return res.status(400).send("Invalid order request. price cannot be zero");
-    if(typeof price !== "number"){
+    if (typeof price !== "number") {
       console.log("Price is not a number")
-      return ;
+      return;
     }
     const options = {
       amount: price * 100,
@@ -59,14 +59,14 @@ export const checkout = async (req:Request, res:Response) => {
 // ----------------------------
 // VERIFY PAYMENT
 // ----------------------------
-export const paymentVerification = async (req:Request, res:Response) => {
+export const paymentVerification = async (req: Request, res: Response) => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
 
     const body = `${razorpay_order_id}|${razorpay_payment_id}`;
 
-    if(!KEY_SECRET){
+    if (!KEY_SECRET) {
       throw new error("KEY_SECRET NOT present")
     }
     const expectedSignature = crypto

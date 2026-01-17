@@ -13,16 +13,21 @@ import UserDetails from './pages/UserDetails.tsx';
 import NotFound from './pages/NotFound.tsx';
 import { Toaster } from './components/ui/sonner.tsx';
 import AdminPage from './pages/AdminPage.tsx';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const root = document.getElementById("root");
+const queryClient = new QueryClient()
 
 const ProtectedRoutes = ({ children }: any) => {
   return (
-    <UserContextProvider>
-      <CartContextProvider>
-        {children}
-      </CartContextProvider>
-    </UserContextProvider>
+    <QueryClientProvider client={queryClient}>
+
+      <UserContextProvider>
+        <CartContextProvider>
+          {children}
+        </CartContextProvider>
+      </UserContextProvider>
+    </QueryClientProvider>
   )
 }
 

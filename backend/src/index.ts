@@ -3,6 +3,7 @@ import cors from "cors";
 import userRouter from "./routers/userRouter"
 import productRouter from "./routers/productRouter"
 import paymentRouter from "./routers/paymentRouter"
+import adminRouter from "./routers/AdminRouter"
 import cookieParser from "cookie-parser";
 import "dotenv/config";
 import connectDB from "./config/database"; 
@@ -20,6 +21,7 @@ app.use(cookieParser())
 app.use("/user",userRouter);
 app.use("/product",productRouter);
 app.use("/payment",paymentRouter);
+app.use("/admin",adminRouter)
 app.get("/",(req,res)=>{
     res.send("Hello from backend")
 })
