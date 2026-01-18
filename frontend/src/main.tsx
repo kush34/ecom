@@ -60,6 +60,11 @@ if (root) {
               <AdminPage />
             </ProtectedRoutes>
           } />
+          <Route path="/admin/:page" element={
+            <ProtectedRoutes>
+              <AdminPage />
+            </ProtectedRoutes>
+          } />
           <Route path="/payment/:id" element={<PaymentSuccess />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

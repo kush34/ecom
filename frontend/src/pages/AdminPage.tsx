@@ -2,14 +2,15 @@ import '@fontsource/space-mono/700.css';
 import { UserContext } from '@/store/UserContext'
 import { axiosInstace } from '@/utils/axiosService'
 import { useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import Dashboard from '@/components/admin-page/dashboard';
 import Layout from '@/components/layouts/admin-page-layout';
+import Orders from '@/components/admin-page/Orders';
+import type { AdminOrder } from '@/components/admin-colums/admin-columns';
+import Inventory from '@/components/admin-page/inventory';
 
-interface AdminOrder {
-  id: string;
-}
+
 
 const AdminPage = () => {
   const userCtx = useContext(UserContext)
@@ -17,12 +18,10 @@ const AdminPage = () => {
   const userLoading = userCtx?.loading
   const navigate = useNavigate()
   const [orders, setOrders] = useState<AdminOrder[]>([])
-
+  const location = useLocation();
   const getAdminOrders = async () => {
     try {
       const request = await axiosInstace("/user/admin/getOrders")
-      const request1 = await axiosInstace("/admin/dashboard")
-      console.log(request1)
       if (request.status === 200) {
         setOrders(request.data)
       }
@@ -45,17 +44,15 @@ const AdminPage = () => {
   }, [])
 
   if (userLoading) return <div>loading Details</div>
-  if (!user || user?.role !== 'admin') return null
+  if (!user || user?.role !== 'admin') return null;
 
   return (
     <Layout>
       <div className="min-h-screen bg-gray-50 py-8 px-4 mx-auto">
         <div className="w-full">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-            <p className="text-gray-600 text-sm mt-1">{orders.length} total orders</p>
-          </div>
-          <Dashboard />
+          {location.pathname == '/admin' && < Dashboard />}
+          {location.pathname == '/admin/orders' && < Orders data={orders} />}
+          {location.pathname == '/admin/inventory' && < Inventory />}
         </div>
       </div>
     </Layout>

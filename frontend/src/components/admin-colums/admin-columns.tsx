@@ -1,5 +1,6 @@
 import type { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 
 type Product = {
   product_id: {
@@ -13,7 +14,11 @@ type Product = {
 
 export type AdminOrder = {
   _id: string
-  user_id: string
+  user_id: {
+    _id: string,
+    email: string,
+    role: string
+  }
   products: Product[]
   total_price: number
   status: string
@@ -25,36 +30,36 @@ export type AdminOrder = {
   createdAt: string
 }
 
-export const columns: ColumnDef<AdminOrder>[] = [
+export const getColumns = (onView: (order: AdminOrder) => void): ColumnDef<AdminOrder>[] => [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     accessorKey: "_id",
     header: "Order ID",
-    cell: ({ row }) => (
-      <div className="font-mono text-xs">{row.getValue("_id")}</div>
-    ),
   },
   {
-    accessorKey: "user_id",
-    header: "User ID",
-    cell: ({ row }) => (
-      <div className="font-mono text-xs">{row.getValue("user_id")}</div>
-    ),
-  },
-  {
-    accessorKey: "products",
-    header: "Products",
-    cell: ({ row }) => {
-      const products = row.getValue("products") as Product[]
-      return (
-        <div className="space-y-1">
-          {products.map((p, i) => (
-            <div key={i} className="text-xs">
-              {p.product_id.productName} × {p.quantity}
-            </div>
-          ))}
-        </div>
-      )
-    },
+    accessorKey: "user_id.email",
+    header: "User Mail",
   },
   {
     accessorKey: "total_price",
@@ -98,6 +103,18 @@ export const columns: ColumnDef<AdminOrder>[] = [
       <div className="text-xs">
         {new Date(row.getValue("createdAt")).toLocaleDateString()}
       </div>
+    ),
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => (
+      <button
+        onClick={() => onView(row.original)}
+        className="text-blue-600 hover:underline"
+      >
+        View
+      </button>
     ),
   },
 ]

@@ -26,21 +26,21 @@ const BudgetCard: React.FC<{ total: number; earning: number; expense: number }> 
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <span className="text-sm text-gray-600">Total Budget</span>
-        <span className="text-lg font-semibold">${total.toLocaleString()}</span>
+        <span className="text-lg font-semibold">₹{total.toLocaleString()}</span>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-green-500" />
           <span className="text-sm">Earning in this year</span>
         </div>
-        <span className="font-semibold">${earning.toLocaleString()}</span>
+        <span className="font-semibold">₹{earning.toLocaleString()}</span>
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <TrendingDown className="w-4 h-4 text-red-500" />
           <span className="text-sm">Expense in this year</span>
         </div>
-        <span className="font-semibold">${expense.toLocaleString()}</span>
+        <span className="font-semibold">₹{expense.toLocaleString()}</span>
       </div>
       <button className="w-full bg-purple-600 text-white py-2 rounded-lg mt-4">
         Increase Budget
