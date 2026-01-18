@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 
 export const getAdminOrders = async (req: Request, res: Response) => {
     try {
-        const orders = await Order.find().populate('products.product_id');
+        const orders = await Order.find().populate('products.product_id').populate('user_id',"-password");
         res.send(orders);
     } catch (error) {
         console.log(error)
