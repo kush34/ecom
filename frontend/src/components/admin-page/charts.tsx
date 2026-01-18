@@ -7,7 +7,7 @@ const MetricCard: React.FC<{ metric: DashboardMetric; color: string }> = ({ metr
   const trendColor = isPositive ? 'text-green-600' : 'text-red-600';
 
   return (
-    <div className="bg-white p-6 rounded-lg border border-gray-200">
+    <div className="bg-white p-6 rounded-lg border border-gray-200 shadow">
       <div className="flex items-center justify-between mb-4">
         <span className="text-sm text-gray-600">{metric.label}</span>
         <div className={`flex items-center gap-1 text-xs ${trendColor}`}>
@@ -34,7 +34,7 @@ const MetricCard: React.FC<{ metric: DashboardMetric; color: string }> = ({ metr
 const DiscountedSalesChart: React.FC<{ data: { date: string; value: number }[]; total: number }> = ({ data, total }) => {
   if (!data || data.length === 0) {
     return (
-      <div className="bg-white p-6 rounded-lg border border-gray-200">
+      <div className="bg-white p-6 rounded-lg border border-gray-200 shadow">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-sm font-medium">Discounted sales in this month</h3>
           <MoreVertical className="w-5 h-5 text-gray-400" />
@@ -50,7 +50,7 @@ const DiscountedSalesChart: React.FC<{ data: { date: string; value: number }[]; 
   const midPoint = Math.floor(data.length / 2);
   
   return (
-    <div className="bg-white p-6 rounded-lg border border-gray-200">
+    <div className="bg-white p-6 rounded-lg border border-gray-200 shadow">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-sm font-medium">Discounted sales in this month</h3>
         <MoreVertical className="w-5 h-5 text-gray-400" />
@@ -98,7 +98,7 @@ const RevenueChart: React.FC<{ data: RevenueDataPoint[]; year: string }> = ({ da
   const maxVal = Math.max(...data.flatMap(d => [Math.abs(d.income), Math.abs(d.expense)]));
   
   return (
-    <div className="bg-white p-6 rounded-lg border border-gray-200">
+    <div className="bg-white p-6 rounded-lg border border-gray-200 shadow">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-sm font-medium">Total revenue</h3>
         <div className="flex gap-4">

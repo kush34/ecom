@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import Dashboard from '@/components/admin-page/dashboard';
+import Layout from '@/components/layouts/admin-page-layout';
 
 interface AdminOrder {
   id: string;
@@ -47,15 +48,17 @@ const AdminPage = () => {
   if (!user || user?.role !== 'admin') return null
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-          <p className="text-gray-600 text-sm mt-1">{orders.length} total orders</p>
+    <Layout>
+      <div className="min-h-screen bg-gray-50 py-8 px-4 mx-auto">
+        <div className="w-full">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+            <p className="text-gray-600 text-sm mt-1">{orders.length} total orders</p>
+          </div>
+          <Dashboard />
         </div>
-        <Dashboard />
       </div>
-    </div>
+    </Layout>
   )
 }
 

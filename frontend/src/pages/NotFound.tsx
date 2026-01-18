@@ -8,8 +8,8 @@ const NotFound = () => {
         <div className="text-xl xl:text-4xl font-bold">
             Page Not Found : (
         </div>
-         <button onClick={()=>navigate("/")} className="cursor-pointer text-white bg-black px-5 rounded py-3">
-             Home page
+         <button onClick={()=>navigate(-1)} className="cursor-pointer text-white bg-black m-2 px-5 rounded py-3">
+             Back
          </button>
     </div>
   )
