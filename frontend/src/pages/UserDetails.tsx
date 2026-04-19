@@ -35,7 +35,7 @@ const UserDetails = () => {
 
   useEffect(() => {
     if (userLoading) return
-    if (!userLoading && (!user || user?.role !== 'admin')) {
+    if (!userLoading && (!user)) {
       toast.error("You do not have access to this page.")
       navigate("/")
     }
@@ -46,7 +46,7 @@ const UserDetails = () => {
   }, [])
 
   if (userLoading) return <div>loading Details</div>
-  if (!user || user?.role !== 'admin') return null
+  if (!user) return null
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
