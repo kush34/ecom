@@ -10,6 +10,7 @@ import { axiosInstace } from "@/utils/axiosService";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/data-table";
 import { columns } from "@/components/CheckOutBill"
+import { CarTaxiFront, ShoppingCart, Undo2 } from "lucide-react";
 const CartPage = () => {
   const navigate = useNavigate();
   const { cartItems } = useContext(CartContext) as CartContextType;
@@ -77,13 +78,13 @@ const CartPage = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-semibold text-gray-900">Your Cart</h1>
+          <h1 className="text-2xl flex items-center gap-2 font-semibold text-gray-900"><ShoppingCart/> Your Cart</h1>
           <Button
             onClick={() => navigate("/")}
             variant="outline"
             className="border-gray-900 text-gray-900 hover:bg-gray-50 font-medium"
           >
-            Back
+            <Undo2/> Back
           </Button>
         </div>
 

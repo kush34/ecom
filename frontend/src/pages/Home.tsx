@@ -7,6 +7,7 @@ import ImageSlider from "@/components/ImageSlider"
 import Product from "@/components/Product"
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "@/store/UserContext.tsx"
+import ProductSkeleton from "@/components/ProductSkeleton.tsx"
 const Home = () => {
   const [products, setProducts] = useState([]);
   const userCtx = useContext(UserContext);
@@ -36,9 +37,11 @@ const Home = () => {
         <div className="section-title text-5xl font-bold mx-10 my-5 text-[#1d242d] flex justify-center">In Store</div>
         {
           loading ?
-            <div className="flex justify-center items-center text-xl">loading ...</div>
+            <div className="w-full grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 justify-center flex-wrap gap-5 p-3">
+              {Array.from({ length: 6 }).map((_, i) => <ProductSkeleton key={i} />)}
+            </div>
             :
-            <div className="w-full flex justify-center flex-wrap gap-5 p-3">
+            <div className="w-full grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 justify-center flex-wrap gap-5 p-3">
               {
                 products.map((pro: ProductType) => {
                   return (
