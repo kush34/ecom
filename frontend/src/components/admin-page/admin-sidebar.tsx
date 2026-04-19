@@ -60,13 +60,13 @@ export function AppSidebar() {
         <Sidebar className="border-none shadow">
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel className="text-2xl p-5 my-5">BeliBeli</SidebarGroupLabel>
+                    <SidebarGroupLabel className="text-2xl p-5 my-5">Admin BeliBeli</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu className="px-3 py-2 text-2xl">
                             {items.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>
-                                        <Link to={item.url} className={`${location.pathname == item.url && "bg-[#9810fa] text-white"}`}>
+                                        <Link to={item.url} className={`${location.pathname == item.url && "bg-primary/80 text-white"}`}>
                                             <item.icon />
                                             <span>{item.title}</span>
                                         </Link>
