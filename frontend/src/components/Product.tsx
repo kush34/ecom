@@ -20,16 +20,16 @@ const Product = ({ productName, price, description, _id, quantity }: ProductType
       <CardContent>
         <img src={`./img${Math.floor(Math.random() * 4) + 1}.jpg`} className="rounded w-full h-72" alt="" />
       </CardContent>
-      <CardTitle className='px-5'>{productName}</CardTitle>
-      <CardDescription className='px-5'>
+      <CardTitle className='px-2'>{productName}</CardTitle>
+      <CardDescription className='px-2'>
         {description}
       </CardDescription>
       <CardFooter className='flex gap-2 p-2'>
-        <Button onClick={() => removeItemFromCart(_id)}><Minus /></Button>
+        <Button className='text-white' onClick={() => removeItemFromCart(_id)}><Minus /></Button>
         <span className='text-xl m-2'>
           {quantity}
         </span>
-        <Button onClick={() => addProductToCart({ productName, price, description, _id })}><Plus /></Button>
+        <Button className='text-white' onClick={() => addProductToCart({ productName, price, description, _id })}><Plus /></Button>
         <span className='p-2'>₹ {price}</span>
       </CardFooter>
     </Card>
