@@ -13,12 +13,12 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-const Product = ({ productName, price, description, _id, quantity }: ProductType) => {
+const Product = ({ productName, price, description, _id, quantity,images }: ProductType) => {
   const { addProductToCart, removeItemFromCart } = useContext(CartContext) as CartContextType;
   return (
     <Card className='border-none'>
       <CardContent>
-        <img src={`/img${Math.floor(Math.random() * 4) + 1}.jpg`} className="rounded w-full h-72" alt="product image" />
+        <img src={images[0] || `/img${Math.floor(Math.random() * 4) + 1}.jpg`} className="rounded w-full h-72" alt="product image" />
       </CardContent>
       <CardTitle className='px-2'>{productName}</CardTitle>
       <CardDescription className='px-2'>
@@ -32,7 +32,7 @@ const Product = ({ productName, price, description, _id, quantity }: ProductType
             {quantity}
           </span>
         }
-        <Button className='text-white' onClick={() => addProductToCart({ productName, price, description, _id })}><Plus /></Button>
+        <Button className='text-white' onClick={() => addProductToCart({ productName, price, description, _id ,images})}><Plus /></Button>
         <span className='p-2'>₹ {price}</span>
       </CardFooter>
     </Card>

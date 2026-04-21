@@ -8,6 +8,7 @@ import { axiosInstace } from "@/utils/axiosService";
 
 export interface ProductType {
   _id: string;
+  images: string[];
   productName: string;
   description: string;
   price: number;

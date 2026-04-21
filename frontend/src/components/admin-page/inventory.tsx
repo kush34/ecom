@@ -1,14 +1,16 @@
 import { axiosInstace } from "@/utils/axiosService"
-import { Layers } from "lucide-react"
+import { Layers, SquarePen } from "lucide-react"
 import { useEffect, useState } from "react"
 import Product from "../Product"
 import type { ProductType } from "@/store/CartContext"
 import ProductSkeleton from "../ProductSkeleton"
 import AddProductModal from "../AddProdcutModel"
+import DeleteProductDialog from "../ProductDeleteDialog"
 
 const Inventory = () => {
   const [products, setProducts] = useState<ProductType[]>([])
   const [loading, setLoading] = useState(false)
+  const [editingProduct, setEditingProduct] = useState<ProductType | null>(null)
   const fetchProducts = async () => {
     setLoading(true)
     try {
@@ -27,8 +29,11 @@ const Inventory = () => {
         <h2 className="text-xl font-bold flex items-center gap-2">
           <Layers /> Inventory
         </h2>
-
-        <AddProductModal onSuccess={fetchProducts} />
+        <AddProductModal
+          onSuccess={fetchProducts}
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+        />
       </div>
       <div>
         {
@@ -41,7 +46,21 @@ const Inventory = () => {
               {
                 products.map((pro: ProductType) => {
                   return (
-                    <Product key={pro?._id} {...pro} />
+                    <div key={pro._id} className="relative">
+                      <button
+                        className="absolute top-2 right-2 bg-black text-white px-2 py-1 text-xs rounded"
+                        onClick={() => setEditingProduct(pro)}
+                      >
+                        <SquarePen />
+                      </button>
+                      <div className="absolute top-2 left-2">
+                        <DeleteProductDialog
+                          productId={pro._id}
+                          onSuccess={fetchProducts}
+                        />
+                      </div>
+                      <Product {...pro} />
+                    </div>
                   )
                 })
               }
