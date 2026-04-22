@@ -1,9 +1,14 @@
-
-import { toast } from "sonner"
-import { createContext, useContext, useEffect, useState } from "react";
-import type { ReactNode } from "react";
-import { UserContext } from "./UserContext";
+import { toast } from "sonner";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import { useNavigate } from "react-router-dom";
+
+import { UserContext } from "./UserContext";
 import { axiosInstace } from "@/utils/axiosService";
 
 export interface ProductType {
@@ -21,8 +26,8 @@ export interface CartItem extends ProductType {
 
 export interface CartContextType {
   cartItems: CartItem[];
-  addProductToCart: (product: ProductType) => void;
-  removeItemFromCart: (_id: string) => void;
+  addProductToCart: (product: ProductType) => Promise<void>;
+  removeItemFromCart: (_id: string) => Promise<void>;
 }
 
 export const CartContext = createContext<CartContextType | null>(null);
@@ -31,131 +36,184 @@ interface CartProviderProps {
   children: ReactNode;
 }
 
-export const CartContextProvider = ({ children }: CartProviderProps) => {
+const showToast = (message: string, isError = false) => {
+  toast.custom((t) => (
+    <div
+      className={`px-4 py-2 rounded shadow-lg cursor-pointer ${isError ? "bg-black text-red-500" : "bg-black text-white"
+        }`}
+      onClick={() => toast.dismiss(t)}
+    >
+      {message}
+    </div>
+  ));
+};
+
+export const CartContextProvider = ({
+  children,
+}: CartProviderProps) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  if (!UserContext) {
-    console.error("UserContext is not available");
-    return null; // or show fallback
-  }
+
   const userCtx = useContext(UserContext);
-  const user = userCtx ? userCtx.user : null;
-  const userLoading = userCtx?.loading;
+  const user = userCtx?.user ?? null;
+  const userLoading = userCtx?.loading ?? false;
+
   const navigate = useNavigate();
 
-  const addProductToCart = async ({ _id, productName, description, price }: ProductType) => {
+  const addProductToCart = async ({
+    _id,
+    productName,
+    description,
+    price,
+    images,
+  }: ProductType) => {
     try {
       if (userLoading) return;
-      if (user === null && !userLoading) {
+
+      if (!user) {
         navigate("/authentication");
         return;
       }
-      const existingProduct = cartItems.find((product) => product._id === _id);
 
+      const existingProduct = cartItems.find(
+        (product) => product._id === _id
+      );
 
       const newCartItems: CartItem[] = existingProduct
         ? cartItems.map((product) =>
-          product._id === _id ? { ...product, quantity: product.quantity + 1 } : product
+          product._id === _id
+            ? {
+              ...product,
+              quantity: product.quantity + 1,
+            }
+            : product
         )
         : [
           ...cartItems,
-          { _id, productName, description, price, quantity: 1 },
+          {
+            _id,
+            productName,
+            description,
+            price,
+            images,
+            quantity: 1,
+          },
         ];
+
+      const previousCart = cartItems;
+
+      // optimistic update
       setCartItems(newCartItems);
-      const updatedCart = await axiosInstace.post(`${import.meta.env.VITE_Backend_URL}/user/updateCart`, { cartItems: newCartItems })
 
-      if (updatedCart.status !== 200) {
-        const error = updatedCart.data?.error || "Could not add the item to cart.";
+      const response = await axiosInstace.post(
+        "/user/updateCart",
+        { cartItems: newCartItems }
+      );
 
-        toast.custom((t) => (
-          <div
-            className="bg-black text-red px-4 py-2 rounded shadow-lg"
-            onClick={() => toast.dismiss(t)}
-          >
-            {error}
-          </div>
-        )
-        )
-      } else {
-        toast.custom((t) => (
-          <div
-            className="bg-black text-white px-4 py-2 rounded shadow-lg"
-            onClick={() => toast.dismiss(t)}
-          >
-            Added Product to the cart
-          </div>
-        )
-        )
+      if (response.status !== 200) {
+        setCartItems(previousCart);
 
+        const error =
+          response.data?.error ||
+          "Could not add item to cart.";
+
+        showToast(error, true);
+        return;
       }
 
-    } catch (error) {
+      showToast("Product added to cart");
+    } catch (error: any) {
+      console.error("addProductToCart error:", error);
 
+      setCartItems(cartItems);
+
+      const errorMessage =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Failed to update cart.";
+
+      showToast(errorMessage, true);
     }
   };
 
   const removeItemFromCart = async (_id: string) => {
-    if (!user && !userLoading) {
-      navigate("/authentication");
-      return;
-    }
-    if (!user) return;
-
-    const existingProduct = cartItems.find((product) => product._id === _id);
-    if (!existingProduct) return; // nothing to remove
-
-    const updatedCart =
-      existingProduct.quantity > 1
-        ? cartItems.map((product) =>
-          product._id === _id ? { ...product, quantity: product.quantity - 1 } : product
-        )
-        : cartItems.filter((product) => product._id !== _id);
-
-    const previousCart = cartItems;
-
-    setCartItems(updatedCart);
-
     try {
-      const resp = await axiosInstace.post("/user/updateCart", { cartItems: updatedCart });
+      if (userLoading) return;
 
-      if (resp.status !== 200) {
-        setCartItems(previousCart);
-        const serverMessage = resp.data?.error || "Could not update cart.";
-        toast.custom((t) => (
-          <div className="bg-black text-red px-4 py-2 rounded shadow-lg" onClick={() => toast.dismiss(t)}>
-            {serverMessage}
-          </div>
-        ));
-      } else {
-        toast.custom((t) => (
-          <div className="bg-black text-white px-4 py-2 rounded shadow-lg" onClick={() => toast.dismiss(t)}>
-            Cart updated
-          </div>
-        ));
+      if (!user) {
+        navigate("/authentication");
+        return;
       }
-    } catch (err: any) {
-      console.error("removeItemFromCart error:", err);
-      setCartItems(previousCart);
 
-      const serverMessage = err?.response?.data?.error || err?.message || "Failed to update cart.";
-      toast.custom((t) => (
-        <div className="bg-black text-red px-4 py-2 rounded shadow-lg" onClick={() => toast.dismiss(t)}>
-          {serverMessage}
-        </div>
-      ));
+      const existingProduct = cartItems.find(
+        (product) => product._id === _id
+      );
+
+      if (!existingProduct) return;
+
+      const updatedCart: CartItem[] =
+        existingProduct.quantity > 1
+          ? cartItems.map((product) =>
+            product._id === _id
+              ? {
+                ...product,
+                quantity: product.quantity - 1,
+              }
+              : product
+          )
+          : cartItems.filter(
+            (product) => product._id !== _id
+          );
+
+      const previousCart = cartItems;
+
+      // optimistic update
+      setCartItems(updatedCart);
+
+      const response = await axiosInstace.post(
+        "/user/updateCart",
+        { cartItems: updatedCart }
+      );
+
+      if (response.status !== 200) {
+        setCartItems(previousCart);
+
+        const error =
+          response.data?.error ||
+          "Could not update cart.";
+
+        showToast(error, true);
+        return;
+      }
+
+      showToast("Cart updated");
+    } catch (error: any) {
+      console.error("removeItemFromCart error:", error);
+
+      const errorMessage =
+        error?.response?.data?.error ||
+        error?.message ||
+        "Failed to update cart.";
+
+      showToast(errorMessage, true);
     }
   };
 
-
   useEffect(() => {
-    if (user && Array.isArray(user.cart)) {
-
+    if (user?.cart && Array.isArray(user.cart)) {
       setCartItems(user.cart as CartItem[]);
     } else {
       setCartItems([]);
     }
   }, [user]);
+
   return (
-    <CartContext.Provider value={{ cartItems, addProductToCart, removeItemFromCart }}>
+    <CartContext.Provider
+      value={{
+        cartItems,
+        addProductToCart,
+        removeItemFromCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );
